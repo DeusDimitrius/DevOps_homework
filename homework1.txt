@@ -1,0 +1,187 @@
+1. Задание 1.1
+Last login: Fri Oct 26 22:18:54 on ttys000
+MacBook-Air-User:~ user$ ssh dmitrii@192.168.56.101
+dmitrii@192.168.56.101's password: 
+Last login: Thu Oct 25 18:05:03 2018 from 192.168.56.1
+[dmitrii@localhost ~]$ ls -lh /usr/share/man/man*/*config*
+-rw-r--r--. 1 root root 6,4K июн 10  2014 /usr/share/man/man1/pkg-config.1.gz
+-rw-r--r--. 1 root root 6,2K апр 11  2018 /usr/share/man/man5/config.5ssl.gz
+-rw-r--r--. 1 root root  480 апр 11  2018 /usr/share/man/man5/config-util.5.gz
+-rw-r--r--. 1 root root 1,9K апр 11  2018 /usr/share/man/man5/selinux_config.5.gz
+-rw-r--r--. 1 root root  16K апр 11  2018 /usr/share/man/man5/ssh_config.5.gz
+-rw-r--r--. 1 root root  14K апр 11  2018 /usr/share/man/man5/sshd_config.5.gz
+-rw-r--r--. 1 root root 7,8K апр 11  2018 /usr/share/man/man5/x509v3_config.5ssl.gz
+-rw-r--r--. 1 root root 3,4K авг  4  2017 /usr/share/man/man8/authconfig.8.gz
+-rw-r--r--. 1 root root   42 авг  4  2017 /usr/share/man/man8/authconfig-tui.8.gz
+-rw-r--r--. 1 root root 2,9K авг  4  2017 /usr/share/man/man8/chkconfig.8.gz
+-rw-r--r--. 1 root root  235 окт 21  2017 /usr/share/man/man8/grub2-mkconfig.8.gz
+-rw-r--r--. 1 root root 8,0K апр 11  2018 /usr/share/man/man8/iprconfig.8.gz
+-r--r--r--. 1 root root   36 апр 11  2018 /usr/share/man/man8/lvm-config.8.gz
+-r--r--r--. 1 root root 3,8K апр 11  2018 /usr/share/man/man8/lvmconfig.8.gz
+-r--r--r--. 1 root root   36 апр 11  2018 /usr/share/man/man8/lvm-dumpconfig.8.gz
+-rw-r--r--. 1 root root  442 апр 11  2018 /usr/share/man/man8/sys-unconfig.8.gz
+
+2. Задание 1.2
+[dmitrii@localhost ~]$ ls -lh /usr/share/man/man1/*system* /usr/share/man/man7/*system*
+-rw-r--r--. 1 root root  13K апр 11  2018 /usr/share/man/man1/systemctl.1.gz
+-rw-r--r--. 1 root root 8,3K апр 11  2018 /usr/share/man/man1/systemd.1.gz
+-rw-r--r--. 1 root root 3,6K апр 11  2018 /usr/share/man/man1/systemd-analyze.1.gz
+-rw-r--r--. 1 root root 1,7K апр 11  2018 /usr/share/man/man1/systemd-ask-password.1.gz
+-rw-r--r--. 1 root root 2,9K апр 11  2018 /usr/share/man/man1/systemd-bootchart.1.gz
+-rw-r--r--. 1 root root 1,6K апр 11  2018 /usr/share/man/man1/systemd-cat.1.gz
+-rw-r--r--. 1 root root 1016 апр 11  2018 /usr/share/man/man1/systemd-cgls.1.gz
+-rw-r--r--. 1 root root 1,7K апр 11  2018 /usr/share/man/man1/systemd-cgtop.1.gz
+-rw-r--r--. 1 root root 1,6K апр 11  2018 /usr/share/man/man1/systemd-delta.1.gz
+-rw-r--r--. 1 root root 1,5K апр 11  2018 /usr/share/man/man1/systemd-detect-virt.1.gz
+-rw-r--r--. 1 root root 1,5K апр 11  2018 /usr/share/man/man1/systemd-escape.1.gz
+-rw-r--r--. 1 root root 2,0K апр 11  2018 /usr/share/man/man1/systemd-firstboot.1.gz
+-rw-r--r--. 1 root root   49 апр 11  2018 /usr/share/man/man1/systemd-firstboot.service.1.gz
+-rw-r--r--. 1 root root 1,6K апр 11  2018 /usr/share/man/man1/systemd-inhibit.1.gz
+-rw-r--r--. 1 root root 1,1K апр 11  2018 /usr/share/man/man1/systemd-machine-id-commit.1.gz
+-rw-r--r--. 1 root root 1,2K апр 11  2018 /usr/share/man/man1/systemd-machine-id-setup.1.gz
+-rw-r--r--. 1 root root 1,6K апр 11  2018 /usr/share/man/man1/systemd-notify.1.gz
+-rw-r--r--. 1 root root 7,7K апр 11  2018 /usr/share/man/man1/systemd-nspawn.1.gz
+-rw-r--r--. 1 root root  881 апр 11  2018 /usr/share/man/man1/systemd-path.1.gz
+-rw-r--r--. 1 root root 3,2K апр 11  2018 /usr/share/man/man1/systemd-run.1.gz
+-rw-r--r--. 1 root root 1,1K апр 11  2018 /usr/share/man/man1/systemd-tty-ask-password-agent.1.gz
+-r--r--r--. 1 root root 4,3K апр 11  2018 /usr/share/man/man7/lvmsystemid.7.gz
+-rw-r--r--. 1 root root  17K апр 11  2018 /usr/share/man/man7/systemd.directives.7.gz
+-rw-r--r--. 1 root root 3,3K апр 11  2018 /usr/share/man/man7/systemd.generator.7.gz
+-rw-r--r--. 1 root root 5,4K апр 11  2018 /usr/share/man/man7/systemd.index.7.gz
+-rw-r--r--. 1 root root 3,9K апр 11  2018 /usr/share/man/man7/systemd.journal-fields.7.gz
+-rw-r--r--. 1 root root 5,5K апр 11  2018 /usr/share/man/man7/systemd.special.7.gz
+-rw-r--r--. 1 root root 3,1K апр 11  2018 /usr/share/man/man7/systemd.time.7.gz
+
+3. Задание 1.3
+[dmitrii@localhost ~]$ cd /usr/share/man
+[dmitrii@localhost man]$ find . -name "*help*"
+./man1/help.1.gz
+./man8/pwhistory_helper.8.gz
+./man8/mkhomedir_helper.8.gz
+./man8/ssh-pkcs11-helper.8.gz
+./man5/firewalld.helper.5.gz
+[dmitrii@localhost man]$ find . -name "conf*"
+./man5/config.5ssl.gz
+./man5/config-util.5.gz
+
+4. Задание 1.4
+[dmitrii@localhost man]$ cd
+[dmitrii@localhost ~]$ mkdir dir1; cd dir1; touch file1.tx file2.tx file3.tx
+[dmitrii@localhost dir1]$ ls -lh
+итого 0
+-rw-rw-r--. 1 dmitrii dmitrii 0 окт 26 03:45 file1.tx
+-rw-rw-r--. 1 dmitrii dmitrii 0 окт 26 03:45 file2.tx
+-rw-rw-r--. 1 dmitrii dmitrii 0 окт 26 03:45 file3.tx
+[dmitrii@localhost dir1]$ find . -name "*.tx" -exec rm {}\;
+find: отсутствует аргумент у `-exec'
+[dmitrii@localhost dir1]$ find . -name "*.tx" -exec rm {} \;
+[dmitrii@localhost dir1]$ ls -lh
+итого 0
+
+/*
+ключ -exec позволяет писать дополнительные команды, которые можно применить к найденному
+*/
+
+5. Задание 2
+[dmitrii@localhost ~]$ cd /etc; head -n 2 yum.conf
+[main]
+cachedir=/var/cache/yum/$basearch/$releasever
+[dmitrii@localhost etc]$ head -n 7 yum.conf
+[main]
+cachedir=/var/cache/yum/$basearch/$releasever
+keepcache=0
+debuglevel=2
+logfile=/var/log/yum.log
+exactarch=1
+obsoletes=1
+[dmitrii@localhost etc]$ tail -n 2 fstab
+UUID=ea174e9b-e4a2-45be-8d22-ffb18f18b7f6 /boot                   xfs     defaults        0 0
+/dev/mapper/centos-swap swap                    swap    defaults        0 0
+
+// Команда wc. Смотрим количество строк и слов в файле fstab
+
+[dmitrii@localhost etc]$wc fstab
+ 11  54 465 fstab
+[dmitrii@localhost etc]$ wc -l fstab
+11 fstab
+[dmitrii@localhost etc]$ wc -w fstab
+54 fstab
+
+// Попытка вывести 12 строк при существующих 11
+
+[dmitrii@localhost etc]$ head -n 12 fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Tue Oct 23 19:06:23 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/centos-root /                       xfs     defaults        0 0
+UUID=ea174e9b-e4a2-45be-8d22-ffb18f18b7f6 /boot                   xfs     defaults        0 0
+/dev/mapper/centos-swap swap                    swap    defaults        0 0
+
+6. Задание 3
+[dmitrii@localhost ~]$ touch file_name1.md file_name2.md file_name3.md
+[dmitrii@localhost ~]$ ls -lh
+итого 8,0K
+drwxrwxr-x. 2 dmitrii dmitrii  6 окт 26 03:46 dir1
+-rw-rw-r--. 1 dmitrii dmitrii  5 окт 25 18:26 EOF
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name1.md
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name2.md
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name3.md
+-rw-rw-r--. 1 dmitrii dmitrii 17 окт 25 18:33 text.txt
+[dmitrii@localhost ~]$ mv file_name1{.md,.textdoc}
+[dmitrii@localhost ~]$ ls -lh
+итого 8,0K
+drwxrwxr-x. 2 dmitrii dmitrii  6 окт 26 03:46 dir1
+-rw-rw-r--. 1 dmitrii dmitrii  5 окт 25 18:26 EOF
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name1.textdoc
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name2.md
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name3.md
+-rw-rw-r--. 1 dmitrii dmitrii 17 окт 25 18:33 text.txt
+[dmitrii@localhost ~]$ mv file_name2{.md,}
+[dmitrii@localhost ~]$ ls -lh
+итого 8,0K
+drwxrwxr-x. 2 dmitrii dmitrii  6 окт 26 03:46 dir1
+-rw-rw-r--. 1 dmitrii dmitrii  5 окт 25 18:26 EOF
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name1.textdoc
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name2
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name3.md
+-rw-rw-r--. 1 dmitrii dmitrii 17 окт 25 18:33 text.txt
+[dmitrii@localhost ~]$ mv file_name1{.textdoc,.txt}
+[dmitrii@localhost ~]$ ls -lh
+итого 8,0K
+drwxrwxr-x. 2 dmitrii dmitrii  6 окт 26 03:46 dir1
+-rw-rw-r--. 1 dmitrii dmitrii  5 окт 25 18:26 EOF
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name1.txt
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name2
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name3.md
+-rw-rw-r--. 1 dmitrii dmitrii 17 окт 25 18:33 text.txt
+[dmitrii@localhost ~]$ mv {file_name3.md,test3.md.latest}
+[dmitrii@localhost ~]$ ls -lh
+итого 8,0K
+drwxrwxr-x. 2 dmitrii dmitrii  6 окт 26 03:46 dir1
+-rw-rw-r--. 1 dmitrii dmitrii  5 окт 25 18:26 EOF
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name1.txt
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 file_name2
+-rw-rw-r--. 1 dmitrii dmitrii  0 окт 26 04:02 test3.md.latest
+-rw-rw-r--. 1 dmitrii dmitrii 17 окт 25 18:33 text.txt
+
+7. Задание 4
+[dmitrii@localhost ~]$ cd /mnt
+[dmitrii@localhost mnt]$ cd
+[dmitrii@localhost ~]$ cd /mnt
+[dmitrii@localhost mnt]$ cd -
+/home/dmitrii
+[dmitrii@localhost ~]$ cd /mnt
+[dmitrii@localhost mnt]$ cd ~dmitrii
+[dmitrii@localhost ~]$ cd /mnt
+[dmitrii@localhost mnt]$ cd /home/dmitrii
+[dmitrii@localhost ~]$ cd /mnt
+[dmitrii@localhost mnt]$ cd ~
+[dmitrii@localhost ~]$ cd /mnt
+[dmitrii@localhost mnt]$ cd ./../home/dmitrii
+[dmitrii@localhost ~]$ 
+
