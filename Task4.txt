@@ -1,0 +1,27 @@
+# Processes
+
+1. Run a "sleep" command three times with different intervals
+2. Send a SIGSTOP signal to all of them in three different ways.
+3. Check their statuses with a job command
+4. Terminate one of them. (Any)
+5. To other send a SIGCONT in two different ways.
+6. Kill one by PID and the second one by job ID
+
+Learn lsof command
+  1. Run a "sleep" command, redirect stdout and stderr into two different files. (I know, it will be empty, just for example)
+  2. Find with the lsof command which files this process uses, also find from which file it gain stdout
+  3. List all ESTABLISHED TCP connections with lsof (only them, without any other commands in a pipe)
+
+# Systemd and cron
+
+  1. Write two daemons one should be a simple daemon and do "sleep 10" after a start and then do "echo 1 > /tmp/homework", the second one should be oneshot and do "echo 2 > /tmp/homework" without any sleep
+  2. Make the second depended on the first one (should start only after the first)
+  3. Write a timer for the second one and configure it to run on 01.01.2019 at 00:00
+  4. Start all daemons and timer, check their statuses, timer list and /tmp/homework
+  5. Stop all daemons and timer
+
+Learn anacron
+
+  1. Create an anacron job which will execute a script with "echo Hello > /opt/hello " and run every 2 days with and runs in 1 minute after system boot.
+  2. Restart your virtual machine (if possible, don’t restart your server if you do this on it)
+  3. After one minute check that "hello" will appear in your file 
