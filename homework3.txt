@@ -1,0 +1,363 @@
+Задание 1.
+
+1. Создание группы sales с GID = 4000:
+
+[root@localhost dmitrii]# groupadd -g 4000 sales
+
+Проверяем:
+[root@localhost dmitrii]# cat /etc/group
+root:x:0:
+bin:x:1:
+daemon:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mem:x:8:
+kmem:x:9:
+wheel:x:10:
+cdrom:x:11:
+mail:x:12:postfix
+man:x:15:
+dialout:x:18:
+floppy:x:19:
+games:x:20:
+tape:x:33:
+video:x:39:
+ftp:x:50:
+lock:x:54:
+audio:x:63:
+nobody:x:99:
+users:x:100:
+utmp:x:22:
+utempter:x:35:
+input:x:999:
+systemd-journal:x:190:
+systemd-network:x:192:
+dbus:x:81:
+polkitd:x:998:
+ssh_keys:x:997:
+sshd:x:74:
+postdrop:x:90:
+postfix:x:89:
+dmitrii:x:1000:dmitrii
+testgroup:x:996:
+testuser:x:1001:
+screen:x:84:
+sales:x:4000:
+
+2. Создаем пользователей bob, alice, eve. Задаем пароли и группу.
+
+[root@localhost dmitrii]# useradd -g 4000 -p 1234 bob
+[root@localhost dmitrii]# useradd -g 4000 -p 1234 alice
+[root@localhost dmitrii]# useradd -g 4000 -p 1234 eve
+
+3. Проверяем наличие пользователей в системе.
+
+[root@localhost dmitrii]# ls -lh /home
+итого 4,0K
+drwx------. 2 alice    sales      62 окт 29 11:53 alice
+drwx------. 2 bob      sales      62 окт 29 11:52 bob
+drwx------. 4 dmitrii  dmitrii  4,0K окт 28 09:34 dmitrii
+drwx------. 2 eve      sales      62 окт 29 11:53 eve
+
+4. Меняем пользователю bob пароль:
+
+[root@localhost dmitrii]# passwd bob
+Изменяется пароль пользователя bob.
+Новый пароль : 
+НЕУДАЧНЫЙ ПАРОЛЬ: Пароль не прошел проверку орфографии - слишком простой
+Повторите ввод нового пароля : 
+passwd: все данные аутентификации успешно обновлены.
+
+5. Обязательное изменение паролей через 30 дней.
+
+[root@localhost dmitrii]# passwd -x 30 alice
+Устанавливаются параметры истечения срока действия для пользователя alice.
+passwd: Успех
+[root@localhost dmitrii]# passwd -x 30 bob
+Устанавливаются параметры истечения срока действия для пользователя bob.
+passwd: Успех
+[root@localhost dmitrii]# passwd -x 30 eve
+Устанавливаются параметры истечения срока действия для пользователя eve.
+passwd: Успех
+
+6. Bob должен изменять свой пароль каждый 15 день. Аккаунты группы sales должны быть заблокированы через 90 дней.
+
+[root@localhost dmitrii]# passwd -x 15 bob
+Устанавливаются параметры истечения срока действия для пользователя bob.
+passwd: Успех
+/*
+Проверяем:
+*/
+[root@localhost dmitrii]# passwd -S bob
+bob PS 2018-11-04 0 15 7 -1 (Пароль задан, шифр SHA512.)
+/*
+Сегодня ПН, 04.11.18
+*/
+[root@localhost dmitrii]# usermod -e 2019-02-03 bob
+[root@localhost dmitrii]# usermod -e 2019-02-03 alice
+[root@localhost dmitrii]# usermod -e 2019-02-03 eve
+
+7. Заставляем пользователя сменить пароль после первого логина.
+
+1) Вариант 1:
+[root@localhost dmitrii]# chage -d 0 bob
+/*
+Устанавливаем количество дней до смены 0
+*/
+[root@localhost dmitrii]# chage -d 0 bob
+[root@localhost dmitrii]# passwd -S bob
+bob PS 1970-01-01 0 15 7 -1 (Пароль задан, шифр SHA512.)
+[root@localhost dmitrii]# chage bob --list
+Последний раз пароль был изменён					: пароль должен быть изменён
+Срок действия пароля истекает					: пароль должен быть изменён
+Пароль будет деактивирован через					: пароль должен быть изменён
+Срок действия учётной записи истекает						: фев 03, 2019
+Минимальное количество дней между сменой пароля		: 0
+Максимальное количество дней между сменой пароля		: 15
+Количество дней с предупреждением перед деактивацией пароля	: 7
+
+/*
+Проверяем:
+*/
+[dmitrii@localhost ~]$ su - bob
+Пароль: 
+Вам необходимо немедленно сменить пароль (в принудительном режиме root)
+Смена пароля для bob.
+(текущий) пароль UNIX: 
+
+2) Вариант 2:
+[root@localhost dmitrii]# passwd -e alice
+Срок действия пароля пользователя alice заканчивается.
+passwd: Успех
+
+[dmitrii@localhost ~]$ su - alice
+Пароль: 
+Вам необходимо немедленно сменить пароль (в принудительном режиме root)
+Смена пароля для alice.
+(текущий) пароль UNIX:
+
+Задание 2.
+
+1. Создаем группу students и трех участников:
+[root@localhost dmitrii]# groupadd -g 4001 students
+[root@localhost dmitrii]# useradd -g 4001 -p 1234 glen
+[root@localhost dmitrii]# useradd -g 4001 -p 1234 antony
+[root@localhost dmitrii]# useradd -g 4001 -p 1234 lesly
+[root@localhost dmitrii]# ls /home
+alice  antony  bob  dmitrii  eve  glen  lesly  testuser
+[root@localhost dmitrii]# ls -lh /home
+итого 4,0K
+drwx------. 2 alice    sales      62 окт 29 11:53 alice
+drwx------. 2 antony   students   62 окт 29 13:29 antony
+drwx------. 2 bob      sales      62 окт 29 11:52 bob
+drwx------. 4 dmitrii  dmitrii  4,0K окт 28 09:34 dmitrii
+drwx------. 2 eve      sales      62 окт 29 11:53 eve
+drwx------. 2 glen     students   62 окт 29 13:28 glen
+drwx------. 2 lesly    students   62 окт 29 13:29 lesly
+drwx------. 2 testuser testuser   62 окт 27 14:36 testuser
+
+2. Создаем директорию /home/students
+[root@localhost dmitrii]# mkdir /home/students
+
+drwxr-xr-x. 2 root     root        6 окт 29 13:32 students
+
+3. Меняем группу на students
+[root@localhost home]# chown :students students
+
+drwxr-xr-x. 2 root     students    6 окт 29 13:32 students
+
+4. Файлы, созданные в этой директории, должны автоматически присваиваться группе студентов:
+/*
+Используем sgid - Set Group Identifier. Таким образом, все файлы, создаваемые в каталоге с установленным SGID будут получать идентификатор группы – владельца каталога, а не владельца файла.
+*/
+[root@localhost home]# chmod g+s students
+Проверяем:
+[root@localhost home]# touch students/test3
+[root@localhost home]# ls -lh /home/students
+итого 0
+-rw-r--r--. 1 root root     0 окт 29 14:01 test2
+-rw-r--r--. 1 root students 0 окт 29 14:05 test3 
+
+5. Должен быть возможен только пользовательский и групповой доступ:
+[root@localhost home]# chmod o-rx students
+drwxrws---. 2 root     students   45 окт 29 14:05 students
+
+6. Проверка:
+[root@localhost dmitrii]# exit
+[dmitrii@localhost ~]$ su - lesly
+Пароль: 
+Последняя неудачная попытка входа в систему:Пн окт 29 14:19:47 MSK 2018на pts/0
+Со времени последнего входа была 1 неудачная попытка.
+[lesly@localhost ~]$ cd /home/students
+[lesly@localhost students]$ touch test4
+[lesly@localhost students]$ ls -lh
+total 0
+-rw-r--r--. 1 root  root     0 Oct 29 14:01 test2
+-rw-r--r--. 1 root  students 0 Oct 29 14:05 test3
+-rw-r--r--. 1 lesly students 0 Oct 29 14:23 test4
+
+
+[lesly@localhost students]$ logout
+[dmitrii@localhost ~]$ cd /home/students
+-bash: cd: /home/students: Отказано в доступе
+[dmitrii@localhost ~]$ 
+
+Задание 3. ACL - списки контроля доступа.
+
+1. Создаем две группы пользователей:
+
+[root@localhost dmitrii]# groupadd -g 4002 bakerstreet
+[root@localhost dmitrii]# groupadd -g 4003 scotlandyard
+/*
+screen:x:84:
+sales:x:4000:
+students:x:4001:
+bakerstreet:x:4002:
+scotlandyard:x:4003:
+*/
+
+2. Создаем пользователей:
+[root@localhost dmitrii]# useradd -g 4002 -p 123bakerstr holmes
+[root@localhost dmitrii]# useradd -g 4002 -p 123bakerstr watson
+[root@localhost dmitrii]# useradd -g 4003 -p 123sctlnd lestrade
+[root@localhost dmitrii]# useradd -g 4003 -p 123sctlnd gregson
+[root@localhost dmitrii]# useradd -g 4003 -p 123sctlnd jones
+[root@localhost dmitrii]# ls -lh /home
+итого 4,0K
+drwx------. 2 alice    sales          62 окт 29 11:53 alice
+drwx------. 2 antony   students       62 окт 29 13:29 antony
+drwx------. 2 bob      sales          62 окт 29 11:52 bob
+drwx------. 4 dmitrii  dmitrii      4,0K окт 28 09:34 dmitrii
+drwx------. 2 eve      sales          62 окт 29 11:53 eve
+drwx------. 2 glen     students       62 окт 29 13:28 glen
+drwx------. 2 gregson  scotlandyard   62 окт 29 15:00 gregson
+drwx------. 2 holmes   bakerstreet    62 окт 29 14:59 holmes
+drwx------. 2 jones    scotlandyard   62 окт 29 15:00 jones
+drwx------. 2 lesly    students       83 окт 29 14:25 lesly
+drwx------. 2 lestrade scotlandyard   62 окт 29 15:00 lestrade
+drwxrws---. 2 root     students       58 окт 29 14:23 students
+drwx------. 2 testuser testuser       62 окт 27 14:36 testuser
+drwx------. 2 watson   bakerstreet    62 окт 29 14:59 watson
+
+3. Создаем директорию /shares/cases:
+drwxr-xr-x.   2 root root    6 окт 29 15:12 shares
+
+[root@localhost shares]# ls -l
+итого 0
+drwxr-xr-x. 2 root root 6 окт 29 15:15 cases
+
+4. Создаем файлы murders.txt moriarty.txt:
+[root@localhost cases]# touch murders.txt moriarty.txt
+[root@localhost cases]# ls -l
+итого 0
+-rw-r--r--. 1 root root 0 окт 29 15:18 moriarty.txt
+-rw-r--r--. 1 root root 0 окт 29 15:18 murders.txt
+
+5. Меняем принадлежность директории и всех файлов с root на bakerstreet:
+[root@localhost /]# chmod 700 shares
+[root@localhost /]# setfacl -R -m g:bakerstreet:rwx shares
+/*
+[root@localhost /]# getfacl shares
+# file: shares
+# owner: root
+# group: root
+user::rwx
+group::---
+group:bakerstreet:rwx
+mask::rwx
+other::---
+*/
+
+[root@localhost /]# setfacl -R -m g:scotlandyard:rwx shares
+/*
+[root@localhost /]# getfacl shares
+# file: shares
+# owner: root
+# group: root
+user::rwx
+group::---
+group:bakerstreet:rwx
+group:scotlandyard:rwx
+mask::rwx
+other::---
+*/
+
+6. Проверяем что изменения произошли и для поддиректорий:
+[root@localhost shares]# getfacl cases
+# file: cases
+# owner: root
+# group: root
+user::rwx
+group::r-x
+group:bakerstreet:rwx
+group:scotlandyard:rwx
+mask::rwx
+other::r-x
+
+7. Рекурсивно назначаем права для пользователя Jones:
+[root@localhost /]# setfacl -R -m u:jones:r shares
+[root@localhost /]# cd shares
+[root@localhost shares]# getfacl cases
+# file: cases
+# owner: root
+# group: root
+user::rwx
+user:jones:r--
+group::r-x
+group:bakerstreet:rwx
+group:scotlandyard:rwx
+mask::rwx
+other::r-x
+
+8. Проверка для файла:
+[root@localhost shares]# cd cases
+[root@localhost cases]# getfacl murders.txt 
+# file: murders.txt
+# owner: root
+# group: root
+user::rw-
+user:jones:r--
+group::r--
+group:bakerstreet:rwx
+group:scotlandyard:rwx
+mask::rwx
+other::r--
+
+9. Проверяем для holmes:
+[root@localhost /]# su - holmes
+[holmes@localhost ~]$ cd /
+[holmes@localhost /]$ cd shares
+[holmes@localhost shares]$ cd cases
+[holmes@localhost cases]$ touch test.txt
+[holmes@localhost cases]$ ls -lh
+total 0
+-rw-rwxr--+ 1 root   root        0 Oct 29 15:18 moriarty.txt
+-rw-rwxr--+ 1 root   root        0 Oct 29 15:18 murders.txt
+-rw-r--r--. 1 holmes bakerstreet 0 Oct 29 16:03 test.txt
+
+10. Пользователю Jones приходится добавить X:
+[root@localhost /]# setfacl -R -m u:jones:rx shares
+[root@localhost /]# su - jones
+Last login: Mon Oct 29 15:59:48 MSK 2018 on pts/0
+[jones@localhost ~]$ cd /
+[jones@localhost /]$ cd shares/cases
+[jones@localhost cases]$ touch test
+touch: cannot touch ‘test’: Permission denied
+
+11. Рекурсивно убираем права для остальных пользователей:
+[root@localhost /]# chmod -R 700 shares
+[root@localhost shares]# getfacl cases
+# file: cases
+# owner: root
+# group: root
+user::rwx
+user:jones:r-x			
+group::r-x			
+group:bakerstreet:rwx		
+group:scotlandyard:rwx
+mask::---
+other::---
+
