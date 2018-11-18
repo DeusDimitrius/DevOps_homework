@@ -1,0 +1,32 @@
+As a result of each task you should provide a corresponding command.
+
+localhost - your centos VM running in VirtualBox
+remotehost - 35.228.120.217
+
+1.1. SSH to host 35.228.120.217 using username and password, provided to you in private chat. Log out from remotehost
+
+1.2. Generate new ssh key-pair on your localhost with name "hw-5" (keys should be created in ~/.ssh folder)
+
+1.3. Set up key-based authentication, so that you can ssh to remotehost without password
+
+1.4. SSH to remotehost without password. Log out from remotehost
+
+1.5. Create ssh config file so that you can ssh to remotehost simply running `ssh remotehost`. As a result provide output of command `cat ~/.ssh/config`
+
+1.6. Using command line utility (curl or telnet) verify that there are some webserver running on port 8080 of IP 10.166.0.2. Notice that 10.166.0.2 is a private network IP so you can access it only from the same network (when you're on remotehost, that runs in the same private network). Log out from remotehost
+
+1.7. Using ssh setup port forwarding so that you can reach webserver from your localhost (choose any free local port you like).
+
+1.8 Like in 1.6, but on localhost this time use command line utility to verify that localhost and port you've specified act like webserver, returning same result as in 1.6
+
+1.9 (*) Open webserver webpage in browser of your Host machine of VirtualBox (Windows or Mac or whatever else you use). You may need to setup port forwarding in settings of VirtualBox.
+
+1.10 (*) Laugh at the memes you found there a little bit. (If you're javascript programmer, please don't be offended, it is just a joke)
+
+
+# Following tasks should be executed on your localhost as you'll need root privileges
+2.1. Imagine your localhost has been relocated to Havana. Change the time zone on the localhost to Havana and verify the time zone has been changed properly. (may be multiple commands)
+
+2.2. Find all systemd journal messages on localhost, that were recorded in the last 50 minutes and originate from a system service started with user id 81. (single command)
+
+2.3. Configure rsyslogd by adding a rule to the newly created configuration file /etc/rsyslog.d/auth-errors.conf to log all security and authentication messages with the priority alert and higher to the /var/log/auth-errors file. Test the newly added log directive with the logger command. (multiple commands)
