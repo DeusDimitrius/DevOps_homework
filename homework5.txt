@@ -13,69 +13,64 @@ Connection to 35.228.120.217 closed.
 
 1.2. Generate new ssh key-pair on your localhost with name "hw-5" (keys should be created in ~/.ssh folder).
 
-1) Создаем SSH ключ (случайно не прописал новое название для ключа, оставил по дефолту):
+1) Создаем SSH ключ:
 
-[dmitrii@localhost ~]$ ssh-keygen
+[dmitrii@localhost .ssh]$ ssh-keygen -f ~/.ssh/hw-5
 Generating public/private rsa key pair.
-Enter file in which to save the key (/home/dmitrii/.ssh/id_rsa):
-/home/dmitrii/.ssh/id_rsa already exists.
-Overwrite (y/n)? y
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-Enter same passphrase again:
-Your identification has been saved in /home/dmitrii/.ssh/id_rsa.
-Your public key has been saved in /home/dmitrii/.ssh/id_rsa.pub.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/dmitrii/.ssh/hw-5.
+Your public key has been saved in /home/dmitrii/.ssh/hw-5.pub.
 The key fingerprint is:
-SHA256:UFv1R5UzKSo/gCcYagdxOIPY2/BHvZ1BUnA++y6edDo dmitrii@localhost.localdomain
+SHA256:K5o8q6ftjSMA3r7dI3GIrHFuwpLo+IjEvuF92tZ9oXQ dmitrii@localhost.localdomain
 The key's randomart image is:
 +---[RSA 2048]----+
-|....o. .++=..   *|
-|..o=.....*.  o * |
-|   ==.+ oooo. o +|
-|  .ooo.+.+o+   . |
-|  . ..  S =      |
-|           +     |
-|          . +    |
-|         .E=     |
-|         .+o.    |
+|                 |
+|                 |
+|                 |
+|.                |
+|o o . . S        |
+|oo = o . o E     |
+|o**   = + o .    |
+|X=+**O.+ o .     |
+|**BX&*o.. .      |
 +----[SHA256]-----+
+
+
+[dmitrii@localhost .ssh]$ ls -lh
+итого 32K
+-rw-rw-r--. 1 dmitrii dmitrii   45 ноя 16 20:43 authorized_keys
+-rw-------. 1 dmitrii dmitrii   84 ноя 17 11:54 config
+-rw-------. 1 dmitrii dmitrii 1,7K ноя 17 12:31 hw-5
+-rw-r--r--. 1 dmitrii dmitrii  411 ноя 17 12:31 hw-5.pub
+-rw-------. 1 dmitrii dmitrii 1,7K ноя 16 20:12 id_rsa
+-rw-r--r--. 1 dmitrii dmitrii  411 ноя 16 20:12 id_rsa.pub
+-rw-------. 1 dmitrii dmitrii  351 ноя 17 12:32 known_hosts
+-rw-r--r--. 1 dmitrii dmitrii  351 ноя 16 19:46 known_hosts.old
 
 2) Загрузка ключа на сервер:
 
-[dmitrii@localhost ~]$ ssh-copy-id baladm@35.228.120.217
-/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/dmitrii/.ssh/id_rsa.pub"
+[dmitrii@localhost .ssh]$ ssh-copy-id -i ~/.ssh/hw-5.pub 35.228.120.217
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/dmitrii/.ssh/hw-5.pub"
 /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
 /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-baladm@35.228.120.217's password:
+baladm@35.228.120.217's password: 
 
 Number of key(s) added: 1
 
-Now try logging into the machine, with:   "ssh 'baladm@35.228.120.217'"
+Now try logging into the machine, with:   "ssh '35.228.120.217'"
 and check to make sure that only the key(s) you wanted were added.
 
 3) Login:
 
-[dmitrii@localhost ~]$ ssh baladm@35.228.120.217
-Last login: Fri Nov 16 19:46:40 2018 from 93.92.200.170
-[baladm@new-students-ssh ~]$
+[dmitrii@localhost .ssh]$ ssh baladm@35.228.120.217
+Last login: Sun Nov 18 17:32:09 2018 from 93.92.200.170
+[baladm@new-students-ssh ~]$ 
 
-4)
-
-[dmitrii@localhost etc]$ cd ~/.ssh
-[dmitrii@localhost .ssh]$ ls -lh
-итого 12K
--rw-------. 1 dmitrii dmitrii 1,7K ноя 16 20:12 id_rsa
--rw-r--r--. 1 dmitrii dmitrii  411 ноя 16 20:12 id_rsa.pub
--rw-r--r--. 1 dmitrii dmitrii  351 ноя 16 19:46 known_hosts
-
-5) Создаем файл config в директории ~/.ssh:
-
-[dmitrii@localhost .ssh]$ vim config
-[dmitrii@localhost .ssh]$ ssh baladm@hw5
-Bad owner or permissions on /home/dmitrii/.ssh/config
+5) Редактируем  файл config в директории ~/.ssh:
 
 /*
-Меняем права на файл
+Измемнение права на файл config при его создании для возможности входа на сервер
 */
 [dmitrii@localhost .ssh]$ chmod 600 config
 [dmitrii@localhost .ssh]$ ssh baladm@hw5
@@ -85,11 +80,14 @@ Last login: Fri Nov 16 20:17:14 2018 from 93.92.200.170
 [baladm@new-students-ssh ~]$
 
 /*
+Обновленный файл
 config:
 
-Host hw5
+Host 35.228.120.217
         Hostname 35.228.120.217
         User baladm
+        IdentityFile ~/.ssh/hw-5
+
 */
 
 1.6. Using command line utility (curl or telnet) verify that there are some webserver running on port 8080 of IP 10.166.0.2. Notice that 10.166.0.2 is a private network IP so you can access it only from the same network (when you're on remotehost, that runs in the same private network). Log out from remotehost
@@ -166,6 +164,7 @@ NTP synchronized: yes
 America/Havana
 ...
 
+[root@localhost log]# timedatectl set-timezone America/Havana
 [root@localhost dmitrii]# timedatectl 
       Local time: Пт 2018-11-16 18:20:01 CST
   Universal time: Пт 2018-11-16 23:20:01 UTC
@@ -214,11 +213,11 @@ auth-errors.conf:
 auth.alert /var/log/auth-errors
 */
 
-3) Перезагрузка:
+3) Перезагрузка и просмотр результата:
 [root@localhost rsyslog.d]# systemctl restart rsyslog
 [root@localhost rsyslog.d]# systemctl restart rsyslog
 
-4) Результат:
+[root@localhost log]# logger -p auth.alert "Test message"
 [root@localhost log]# cat /var/log/auth-errors
-Nov 17 08:30:00 localhost dmitrii: Test message
 
+Nov 17 08:30:00 localhost dmitrii: Test message
