@@ -1,0 +1,50 @@
+###### 1 ######
+
+Copy text of this task (only task 1) into a file. Using only grep get words which have more than 5 letters and have no any other symbols or figures.
+
+Hint: use grep -o -e (-o prints only the matching part of the lines. -e allows to use regexp)
+
+   
+###### 2 ######
+
+Create a text file with the following lines:
+
+Moscow
+Saint-Petersburg
+Novosibirsk
+Yekaterinburg
+Nizhny Novgorod
+Kazan
+Chelyabinsk
+Omsk
+Samara
+Rostov-on-Don
+Ufa
+Krasnoyarsk
+Perm
+Voronezh
+Volgograd
+
+Write a script which read a file and put each line into an array only if it doesn't contain "a" letter. Print the array after this, and how much indexes it has. The output should be like this
+
+./script.sh
+
+Moscow
+Novosibirsk
+Nizhny Novgorod
+Omsk
+Rostov-on-Don
+Perm
+Voronezh
+7
+
+###### EXTRA ######
+
+Write a daemon, which works in a background and checks who is logged in on your server every 15 seconds, the script should have an array with the list of trusted users, and if there any user on the server who is not in this list, script should log out him (kill -HUP can help). Check it by logging as a user who is not in a list and ensures that he logged out. 
+
+(please use at least 15 seconds to stop daemon if something goes wrong)
+
+
+###### LINKS ######
+
+Advanced Bash-Scripting Guide - https://www.tldp.org/LDP/abs/html/
