@@ -1,0 +1,185 @@
+1.Copy text of this task (only task 1) into a file. Using only grep get words which have more than 5letters and have no any other symbols or figures.
+
+Hint: use grep -o -e (-o prints only the matching part of the lines. -e allows to use regexp)
+
+[dmitrii@localhost ~]$ mkdir Homework7
+[dmitrii@localhost ~]$ cd Homework7
+[dmitrii@localhost Homework7]$ vim text
+
+/*
+text:
+****
+
+Copy text of this task (only task 1) into a file. Using only grep get words which have more than 5letters and have no any other symbols or figures.
+
+Hint: use grep -o -e (-o prints only the matching part of the lines. -e allows to use regexp)
+*/
+
+[dmitrii@localhost Homework7]$ vim serch.sh
+[dmitrii@localhost Homework7]$ chmod u+x serch.sh
+
+/*
+serch.sh:
+****
+
+#!/bin/bash
+
+grep -Ewo "[a-zA-Z]+{5,}" text
+*/
+
+[dmitrii@localhost Homework7]$ ./serch.sh
+Using
+words
+which
+letters
+other
+symbols
+figures
+prints
+matching
+lines
+allows
+regexp
+
+2.Create a text file with the following lines. Write a script which read a file and put each line into an array only if it doesn't contain "a" letter. Print the array after this, and how much indexes it has. The output should be like this.
+
+[dmitrii@localhost ~]$ mkdir Homework7
+[dmitrii@localhost ~]$ vim cities.txt
+
+/*
+cities.txt:
+
+Moscow
+Saint-Petersburg
+Novosibirsk
+Yekaterinburg
+Nizhny Novgorod
+Kazan
+Chelyabinsk
+Omsk
+Samara
+Rostov-on-Don
+Ufa
+Krasnoyarsk
+Perm
+Voronezh
+Volgograd
+*/
+
+[dmitrii@localhost ~]$ vim script.sh
+[dmitrii@localhost ~]$ chmod u+x script.sh
+[dmitrii@localhost ~]$ ./script.sh
+Moscow
+Novosibirsk
+Nizhny Novgorod
+Omsk
+Rostov-on-Don
+Perm
+Voronezh
+7
+
+/*
+script.sh:
+****
+#!/bin/bash
+
+cp /dev/null result
+
+IFS=$'\n'
+for CITY in $(sed '/a/d' cities.txt); do
+        echo $CITY | tee -a result;
+done
+
+awk 'END{print NR}' result
+*/
+
+3. Extra. 
+Write a daemon, which works in a background and checks who is logged in on your server every 15 seconds, the script should have an array with the list of trusted users, and if there any user on the server who is not in this list, script should log out him (kill -HUP can help). Check it by logging as a user who is not in a list and ensures that he logged out. 
+
+1) Creating files daemon.sh, user_list
+[root@localhost tmp]# ls -lh
+итого 20K
+-rwxr-xr-x. 1 root    root     40 ноя  9 05:47 daemon2.sh
+-rwxr-xr-x. 1 root    root    129 ноя 19 10:16 daemon.sh
+-rw-rw-r--. 1 dmitrii dmitrii   4 ноя  9 05:53 homework
+drwx------. 3 root    root     17 ноя 18 23:14 systemd-private-9d06e547263f4f56847bab2c921aeb57-chronyd.service-kfPhR3
+drwx------. 3 root    root     17 ноя 16 19:40 systemd-private-e1eccc5ef6734e3b8f73c6913de6fb1e-chronyd.service-x2Qv8W
+drwx------. 2 dmitrii dmitrii   6 окт 28 10:58 tmux-1000
+-rw-r--r--. 1 root    root     17 ноя 19 10:17 user_list
+-rw-------. 1 root    root    243 ноя 10 12:01 yum_save_tx.2018-11-10.12-01.AgWqA_.yumtx
+
+/*
+daemon.sh:
+****
+
+#!/bin/bash
+
+array=$(cat /tmp/user_list)
+who | awk '{ printf ("%s",$1 "\n"); }'| grep -v "${array[@]}" | xargs -I {} -t pkill -u $1{}
+
+*/
+
+/*
+user_list:
+****
+
+root
+dmitrii
+...
+smb
+*/
+
+2) I used systemd, because cron doesn't work with second time intervals.
+
+[root@localhost Homework7]# cd /etc/systemd/system
+[root@localhost system]# vim homework7.service
+[root@localhost system]# vim homework7.timer
+
+/*
+homework7.timer
+****
+
+[Unit]
+Description=Homework7
+
+[Timer]
+OnCalendar=*-*-* *:*:15
+Unit=homework7.service
+*/
+
+/*
+homework7.service
+****
+
+[Unit]
+Description=Homework7
+
+[Service]
+Type=forking
+ExecStart=/tmp/daemon.sh
+*/
+
+[root@localhost Homework7]# systemctl enable homework7.timer
+[root@localhost Homework7]# systemctl start homework7.timer
+[root@localhost Homework7]# systemctl is-active homework7.timer
+active
+systemctl daemon-reload
+[root@localhost tmp]# systemctl status homework7
+● homework7.service - Homework7
+   Loaded: loaded (/etc/systemd/system/homework7.service; static; vendor preset: disabled)
+   Active: activating (start) since Пн 2018-11-19 21:14:10 MSK; 26ms ago
+  Control: 1608
+   CGroup: /system.slice/homework7.service
+
+ноя 19 21:14:10 localhost.localdomain systemd[1]: Starting Homework7...
+ноя 19 21:14:10 localhost.localdomain systemd[1]: Started Homework7.
+
+/*
+MacBook-Air-User:~ user$ ssh dmitrii@centos
+dmitrii@192.168.56.101's password: 
+Last login: Mon Nov 19 21:12:01 2018 from 192.168.56.1
+[dmitrii@localhost ~]$ Connection to 192.168.56.101 closed by remote host.
+Connection to 192.168.56.101 closed.
+MacBook-Air-User:~ user$ 
+*/
+
