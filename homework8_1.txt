@@ -1,0 +1,361 @@
+1. Task: Repositories and Packages:
+a) Найдите любые два rpm пакета, которые мы не использовали ранее, и установите их в систему. Одна установка должна проходить через rpm, другая через yum. Вы должны показать часть истории и лога установки. Удалите оба пакета со всеми установленными зависимостями различными способами.
+
+- Установка через rpm:
+1) rpm -qv
+
+2) Проверяю установлен ли пакет:
+[root@localhost ~]# rpm -q Canna-3.7p3-43.el7.x86_64.rpm.rpm
+пакет 90-Second-Portraits-1.01b-3.el7.noarch.rpm не установлен
+
+3) Проверяю gpg подпись пакета:
+[root@localhost ~]# rpm --checksig Canna-3.7p3-43.el7.x86_64.rpm
+Canna-3.7p3-43.el7.x86_64.rpm: rsa sha1 (md5) pgp md5 ОК
+
+4) Скачиваю файл пакета:
+[root@localhost Homework8]# wget https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/c/Canna-3.7p3-43.el7.x86_64.rpm
+--2018-11-24 23:38:35--  https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/c/Canna-3.7p3-43.el7.x86_64.rpm
+Распознаётся dl.fedoraproject.org (dl.fedoraproject.org)... 209.132.181.23, 209.132.181.25, 209.132.181.24
+Подключение к dl.fedoraproject.org (dl.fedoraproject.org)|209.132.181.23|:443... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа... 200 OK
+Длина: 6444848 (6,1M) [application/x-rpm]
+Сохранение в: «Canna-3.7p3-43.el7.x86_64.rpm»
+
+100%[==========================================================>] 6 444 848   75,3KB/s   за 72s    
+
+2018-11-24 23:39:48 (87,6 KB/s) - «Canna-3.7p3-43.el7.x86_64.rpm» сохранён [6444848/6444848]
+
+5) Установки пакета через rpm:  
+[root@localhost Homework8]# rpm -ivh Canna-3.7p3-43.el7.x86_64.rpm
+Подготовка...               ################################# [100%]
+Обновление / установка...
+   1:Canna-3.7p3-43.el7               ################################# [100%]
+
+6) Удаление пакета через rpm:
+[root@localhost Homework8]# rpm -e Canna-3.7p3-43.el7.x86_64
+[root@localhost Homework8]# rpm -q Canna-3.7p3-43.el7.x86_64
+пакет Canna-3.7p3-43.el7.x86_64 не установлен
+
+7) Установка через yum:
+[root@localhost ~]# wget https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/a/anthy-9100h-26.el7.x86_64.rpm
+--2018-11-22 23:50:09--  https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/a/anthy-9100h-26.el7.x86_64.rpm
+Распознаётся dl.fedoraproject.org (dl.fedoraproject.org)... 209.132.181.23, 209.132.181.24, 209.132.181.25
+Подключение к dl.fedoraproject.org (dl.fedoraproject.org)|209.132.181.23|:443... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа... 200 OK
+Длина: 6304044 (6,0M) [application/x-rpm]
+Сохранение в: «anthy-9100h-26.el7.x86_64.rpm»
+
+100%[==========================================================>] 6 304 044    115KB/s   за 51s    
+
+2018-11-22 23:51:02 (121 KB/s) - «anthy-9100h-26.el7.x86_64.rpm» сохранён [6304044/6304044]
+
+*********************
+*********************
+
+[root@localhost ~]# yum install anthy-9100h-26.el7.x86_64.rpm
+Загружены модули: fastestmirror
+Проверка anthy-9100h-26.el7.x86_64.rpm: anthy-9100h-26.el7.x86_64
+anthy-9100h-26.el7.x86_64.rpm отмечен для установки
+Разрешение зависимостей
+--> Проверка сценария
+---> Пакет anthy.x86_64 0:9100h-26.el7 помечен для установки
+--> Проверка зависимостей окончена
+
+Зависимости определены
+
+====================================================================================================
+ Package         Архитектура      Версия                 Репозиторий                          Размер
+====================================================================================================
+Установка:
+ anthy           x86_64           9100h-26.el7           /anthy-9100h-26.el7.x86_64            25 M
+
+Итого за операцию
+====================================================================================================
+Установить  1 пакет
+
+Общий размер: 25 M
+Объем изменений: 25 M
+Is this ok [y/d/N]: y
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Установка   : anthy-9100h-26.el7.x86_64                                                       1/1 
+  Проверка    : anthy-9100h-26.el7.x86_64                                                       1/1 
+
+Установлено:
+  anthy.x86_64 0:9100h-26.el7                                                                       
+
+Выполнено!
+
+8) Удаление yum:
+[root@localhost Homework8]# yum history
+Загружены модули: fastestmirror
+ID     | Командная строка         | Дата и время     | Действия       | Изменен
+-------------------------------------------------------------------------------
+    29 | install anthy-9100h-26.e | 2018-11-22 23:53 | Install        |    1   
+    28 | install iptables-service | 2018-11-21 20:14 | Install        |    1   
+    27 | install policycoreutils- | 2018-11-21 19:38 | Install        |    7   
+    26 | install telnet           | 2018-11-17 04:11 | Install        |    1   
+    25 | install mlocate          | 2018-11-10 13:25 | Install        |    1   
+    24 | remove ansible           | 2018-11-10 12:36 | Erase          |    1   
+    23 | localinstall ansible-2.7 | 2018-11-10 12:33 | Install        |   26   
+    22 | install wget             | 2018-11-10 12:27 | Install        |    1   
+    21 | install epel-release     | 2018-11-10 12:25 | Install        |    1   
+    20 | install yum-utils        | 2018-11-10 12:18 | Install        |    4   
+    19 | update                   | 2018-11-10 12:14 | I, U           |   81   
+    18 | remove gnuplot-common    | 2018-11-10 12:02 | Erase          |    2   
+    17 | install -y gnuplot       | 2018-11-10 12:01 | Install        |    2   
+    16 | history undo 15          | 2018-11-10 11:56 | Erase          |   12   
+    15 | group install Compatibil | 2018-11-10 11:54 | Install        |   12   
+    14 | remove gnuplot-common    | 2018-11-10 11:52 | Erase          |    1   
+    13 | remove gnuplot           | 2018-11-10 11:52 | Erase          |    1   
+    12 | install -y gnuplot       | 2018-11-10 11:50 | Install        |   33   
+    11 | install bc               | 2018-11-09 13:50 | Install        |    1   
+    10 | install lsof             | 2018-11-09 01:40 | Install        |    1 
+
+9) Удаление при помощи yum history:
+[root@localhost Homework8]# yum history undo 29
+Загружены модули: fastestmirror
+Undoing transaction 29, from Thu Nov 22 23:53:25 2018
+    Установить anthy-9100h-26.el7.x86_64 @/anthy-9100h-26.el7.x86_64
+Разрешение зависимостей
+--> Проверка сценария
+---> Пакет anthy.x86_64 0:9100h-26.el7 помечен для удаления
+--> Проверка зависимостей окончена
+
+Зависимости определены
+
+====================================================================================================
+ Package             Архитектура          Версия                      Репозиторий             Размер
+====================================================================================================
+Удаление:
+ anthy               x86_64               9100h-26.el7                installed                25 M
+
+Итого за операцию
+====================================================================================================
+Удалить  1 пакет
+
+Объем изменений: 25 M
+Продолжить? [y/N]: N
+
+10) Удаление при помощи remove:
+[root@localhost Homework8]# yum remove anthy-9100h-26.el7.x86_64
+Загружены модули: fastestmirror
+Разрешение зависимостей
+--> Проверка сценария
+---> Пакет anthy.x86_64 0:9100h-26.el7 помечен для удаления
+--> Проверка зависимостей окончена
+
+Зависимости определены
+
+====================================================================================================
+ Package             Архитектура          Версия                      Репозиторий             Размер
+====================================================================================================
+Удаление:
+ anthy               x86_64               9100h-26.el7                installed                25 M
+
+Итого за операцию
+====================================================================================================
+Удалить  1 пакет
+
+Объем изменений: 25 M
+Продолжить? [y/N]: y
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+ПРЕДУПРЕЖДЕНИЕ: база данных RPM была изменена вне Yum.
+  Удаление    : anthy-9100h-26.el7.x86_64                                                       1/1 
+  Проверка    : anthy-9100h-26.el7.x86_64                                                       1/1 
+
+Удалено:
+  anthy.x86_64 0:9100h-26.el7                                                                       
+
+Выполнено!
+
+2.Найдите и установите дополнительный репозиторий для вашей системы (не EPEL).  Активируйте его. Скачайте любым способ из него пакет на ваш выбор. Вы должны показать часть истории и лога установки. Удалите пакет и репозиторий.
+
+1) Устанавливаю дополнительный репозиторий ELrepo:
+[root@localhost Homework8]# rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+[root@localhost Homework8]# rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+Загружается http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+Загружается http://elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+Подготовка...               ################################# [100%]
+Обновление / установка...
+   1:elrepo-release-7.0-3.el7.elrepo  ################################# [100%]
+
+2) Проверяю репозитории:
+[root@localhost Homework8]# yum repolist
+Загружены модули: fastestmirror
+Loading mirror speeds from cached hostfile
+epel/x86_64/metalink                                                         |  30 kB  00:00:00     
+ * base: dedic.sh
+ * elrepo: ftp.nluug.nl
+ * epel: mirror.nsc.liu.se
+ * extras: mirror.reconn.ru
+ * updates: dedic.sh
+base                                                                         | 3.6 kB  00:00:00     
+elrepo                                                                       | 2.9 kB  00:00:00     
+extras                                                                       | 3.4 kB  00:00:00     
+updates                                                                      | 3.4 kB  00:00:00     
+elrepo/primary_db                                                            | 592 kB  00:00:03     
+Идентификатор репозитория      репозиторий                                                 состояние
+base/7/x86_64                  CentOS-7 - Base                                              9 911
+elrepo                         ELRepo.org Community Enterprise Linux Repository - el7         252
+epel/x86_64                    Extra Packages for Enterprise Linux 7 - x86_64              12 718
+extras/7/x86_64                CentOS-7 - Extras                                              434
+updates/7/x86_64               CentOS-7 - Updates                                           1 614
+repolist: 24 929
+
+3) Скачиваю пакет:
+[root@localhost Homework8]# wget https://centos.pkgs.org/7/elrepo-x86_64/fmc-kmod-tools-0.1-2017.06.2.el7.elrepo.x86_64.rpm.html
+--2018-11-25 00:32:42--  https://centos.pkgs.org/7/elrepo-x86_64/fmc-kmod-tools-0.1-2017.06.2.el7.elrepo.x86_64.rpm.html
+Распознаётся centos.pkgs.org (centos.pkgs.org)... 213.133.102.174
+Подключение к centos.pkgs.org (centos.pkgs.org)|213.133.102.174|:443... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа... 200 OK
+Длина: 14374 (14K) [text/html]
+Сохранение в: «fmc-kmod-tools-0.1-2017.06.2.el7.elrepo.x86_64.rpm.html»
+
+100%[==========================================================>] 14 374      --.-K/s   за 0,07s   
+
+2018-11-25 00:32:43 (194 KB/s) - «fmc-kmod-tools-0.1-2017.06.2.el7.elrepo.x86_64.rpm.html» сохранён [14374/14374]
+
+4) Устанавливаю пакет:
+[root@localhost Homework8]# yum install kmod-r8168
+Загружены модули: fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: dedic.sh
+ * elrepo: ftp.nluug.nl
+ * epel: mirror.nsc.liu.se
+ * extras: mirror.reconn.ru
+ * updates: dedic.sh
+Разрешение зависимостей
+--> Проверка сценария
+---> Пакет kmod-r8168.x86_64 0:8.046.00-1.el7_5.elrepo помечен для установки
+--> Проверка зависимостей окончена
+
+Зависимости определены
+
+====================================================================================================
+ Package               Архитектура       Версия                             Репозиторий       Размер
+====================================================================================================
+Установка:
+ kmod-r8168            x86_64            8.046.00-1.el7_5.elrepo            elrepo            140 k
+
+Итого за операцию
+====================================================================================================
+Установить  1 пакет
+
+Объем загрузки: 140 k
+Объем изменений: 691 k
+Is this ok [y/d/N]: y
+*****
+*****
+
+5) YUM history:
+[root@localhost Homework8]# yum history
+Загружены модули: fastestmirror
+ID     | Командная строка         | Дата и время     | Действия       | Изменен
+-------------------------------------------------------------------------------
+    31 | install kmod-r8168       | 2018-11-25 00:44 | Install        |    1 ><
+    30 | remove anthy-9100h-26.el | 2018-11-24 23:52 | Erase          |    1 ><
+    29 | install anthy-9100h-26.e | 2018-11-22 23:53 | Install        |    1 > 
+    28 | install iptables-service | 2018-11-21 20:14 | Install        |    1   
+    27 | install policycoreutils- | 2018-11-21 19:38 | Install        |    7   
+    26 | install telnet           | 2018-11-17 04:11 | Install        |    1  
+
+6) Удаляю пакет:
+[root@localhost Homework8]# yum history undo 31
+Загружены модули: fastestmirror
+Undoing transaction 31, from Sun Nov 25 00:44:05 2018
+ ** Установить kmod-r8168-8.046.00-1.el7_5.elrepo.x86_64 installed
+Разрешение зависимостей
+There are unfinished transactions remaining. You might consider running yum-complete-transaction, or "yum-complete-transaction --cleanup-only" and "yum history redo last", first to finish them. If those don't work you'll have to try removing/installing packages by hand (maybe package-cleanup can help).
+--> Проверка сценария
+---> Пакет kmod-r8168.x86_64 0:8.046.00-1.el7_5.elrepo помечен для удаления
+--> Проверка зависимостей окончена
+
+Зависимости определены
+
+====================================================================================================
+ Package              Архитектура      Версия                             Репозиторий         Размер
+====================================================================================================
+Удаление:
+ kmod-r8168           x86_64           8.046.00-1.el7_5.elrepo            installed           691 k
+
+Итого за операцию
+====================================================================================================
+Удалить  1 пакет
+
+Объем изменений: 691 k
+Продолжить? [y/N]: y
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+ПРЕДУПРЕЖДЕНИЕ: база данных RPM была изменена вне Yum.
+  Удаление    : kmod-r8168-8.046.00-1.el7_5.elrepo.x86_64                                       1/1 
+Working. This may take some time ...
+Done.
+  Проверка    : kmod-r8168-8.046.00-1.el7_5.elrepo.x86_64                                       1/1 
+
+Удалено:
+  kmod-r8168.x86_64 0:8.046.00-1.el7_5.elrepo                                                       
+
+Выполнено!
+
+7) Удаляю репозиторий:
+[root@localhost Homework8]# yum remove elrepo*
+Загружены модули: fastestmirror
+Разрешение зависимостей
+There are unfinished transactions remaining. You might consider running yum-complete-transaction, or "yum-complete-transaction --cleanup-only" and "yum history redo last", first to finish them. If those don't work you'll have to try removing/installing packages by hand (maybe package-cleanup can help).
+--> Проверка сценария
+---> Пакет elrepo-release.noarch 0:7.0-3.el7.elrepo помечен для удаления
+--> Проверка зависимостей окончена
+
+Зависимости определены
+
+====================================================================================================
+ Package                   Архитектура       Версия                      Репозиторий          Размер
+====================================================================================================
+Удаление:
+ elrepo-release            noarch            7.0-3.el7.elrepo            installed            5.2 k
+
+Итого за операцию
+====================================================================================================
+Удалить  1 пакет
+
+Объем изменений: 5.2 k
+Продолжить? [y/N]: y
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Удаление    : elrepo-release-7.0-3.el7.elrepo.noarch                                          1/1 
+  Проверка    : elrepo-release-7.0-3.el7.elrepo.noarch                                          1/1 
+
+Удалено:
+  elrepo-release.noarch 0:7.0-3.el7.elrepo                                                          
+
+Выполнено!
+
+
+[root@localhost Homework8]# yum repolist
+Загружены модули: fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: dedic.sh
+ * epel: mirror.nsc.liu.se
+ * extras: mirror.reconn.ru
+ * updates: dedic.sh
+Идентификатор репозитория          репозиторий                                             состояние
+base/7/x86_64                      CentOS-7 - Base                                          9 911
+epel/x86_64                        Extra Packages for Enterprise Linux 7 - x86_64          12 718
+extras/7/x86_64                    CentOS-7 - Extras                                          434
+updates/7/x86_64                   CentOS-7 - Updates                                       1 614
+repolist: 24 677
+
