@@ -1,0 +1,12 @@
+[root@localhost ~]# tcpdump -i enp0s8 src host 192.168.56.102 
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s8, link-type EN10MB (Ethernet), capture size 262144 bytes
+13:05:32.498924 ARP, Reply localhost.localdomain is-at 08:00:27:75:de:ec (oui Unknown), length 28
+13:05:32.503892 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 3908026321:3908026469, ack 429237098, win 313, options [nop,nop,TS val 4615716 ecr 1310540969], length 148
+13:05:32.504103 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 148:220, ack 1, win 313, options [nop,nop,TS val 4615717 ecr 1310540969], length 72
+13:05:32.505174 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [.], ack 97, win 313, options [nop,nop,TS val 4615718 ecr 1310540974], length 0
+13:05:32.524043 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [F.], seq 220, ack 98, win 313, options [nop,nop,TS val 4615735 ecr 1310540976], length 0
+^C
+5 packets captured
+5 packets received by filter
+0 packets dropped by kernel
