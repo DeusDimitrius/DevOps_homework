@@ -1,0 +1,22 @@
+[root@localhost ~]# tcpdump -i enp0s8 src host 192.168.56.102 
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s8, link-type EN10MB (Ethernet), capture size 262144 bytes
+12:47:39.681132 ARP, Reply localhost.localdomain is-at 08:00:27:75:de:ec (oui Unknown), length 28
+12:47:39.681333 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [S.E], seq 3908023339, ack 429233925, win 28960, options [mss 1460,sackOK,TS val 3542894 ecr 1309470817,nop,wscale 7], length 0
+12:47:39.683003 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [.], ack 22, win 227, options [nop,nop,TS val 3542896 ecr 1309470819], length 0
+12:47:39.698390 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 1:22, ack 22, win 227, options [nop,nop,TS val 3542907 ecr 1309470819], length 21
+12:47:39.705179 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 22:1302, ack 1382, win 249, options [nop,nop,TS val 3542918 ecr 1309470835], length 1280
+12:47:39.713912 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 1302:1666, ack 1430, win 249, options [nop,nop,TS val 3542927 ecr 1309470842], length 364
+12:47:39.760173 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [.], ack 1446, win 249, options [nop,nop,TS val 3542973 ecr 1309470852], length 0
+12:47:39.760557 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [.], ack 1490, win 249, options [nop,nop,TS val 3542973 ecr 1309470893], length 0
+12:47:39.761646 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 1666:1710, ack 1490, win 249, options [nop,nop,TS val 3542974 ecr 1309470893], length 44
+12:47:39.772133 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 1710:1794, ack 1550, win 249, options [nop,nop,TS val 3542984 ecr 1309470894], length 84
+12:47:39.777449 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 1794:2126, ack 1922, win 271, options [nop,nop,TS val 3542987 ecr 1309470904], length 332
+12:47:39.791369 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 2126:2154, ack 2574, win 292, options [nop,nop,TS val 3543004 ecr 1309470913], length 28
+12:47:39.834169 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [.], ack 2686, win 292, options [nop,nop,TS val 3543047 ecr 1309470922], length 0
+12:47:40.063069 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 2154:2654, ack 2686, win 292, options [nop,nop,TS val 3543270 ecr 1309470922], length 500
+12:47:40.063510 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 2654:2698, ack 2686, win 292, options [nop,nop,TS val 3543276 ecr 1309471191], length 44
+12:47:40.064019 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [.], ack 3138, win 313, options [nop,nop,TS val 3543277 ecr 1309471191], length 0
+12:47:40.079796 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 2698:2806, ack 3138, win 313, options [nop,nop,TS val 3543291 ecr 1309471191], length 108
+12:47:40.091841 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 2806:2898, ack 3138, win 313, options [nop,nop,TS val 3543304 ecr 1309471207], length 92
+12:47:40.115941 IP localhost.localdomain.ssh > 192.168.56.1.55506: Flags [P.], seq 2898:2982, ack 3138, win 313, options [nop,nop,TS val 3543328 ecr 1309471218], length 84

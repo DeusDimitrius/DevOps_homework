@@ -1,0 +1,205 @@
+1. Add secondary ip address to you second network interface enp0s8. Each point must be presented with commands and showing that new address was applied to the interface. To repeat adding address for points 2 and 3 address must be deleted (please add deleting address to you homework log) Methods:
+
+1) using ip utility (stateless)
+[root@localhost ~]# ip addr | grep inet
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+    inet6 fe80::ced5:fdde:8c70:ed26/64 scope link noprefixroute 
+    inet 192.168.56.101/24 brd 192.168.56.255 scope global dynamic enp0s8
+
+/*
+Не понимаю, почему такая команда не принимается:
+[root@localhost ~]# ifconfig eth0s8:1 192.168.56.102 netmask 255.255.255.0
+SIOCSIFADDR: Нет такого устройства
+eth0s8:1: ERROR while getting interface flags: Нет такого устройства
+SIOCSIFNETMASK: Нет такого устройства
+*/
+
+# А вот так все работает без проблем:
+[root@localhost ~]# ip a add 192.168.56.102/24 dev enp0s8
+[root@localhost ~]# ip addr | grep inet
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+    inet6 fe80::ced5:fdde:8c70:ed26/64 scope link noprefixroute 
+    inet 192.168.56.101/24 brd 192.168.56.255 scope global dynamic enp0s8
+    inet 192.168.56.102/24 scope global secondary enp0s8
+
+[root@localhost ~]# ip address del 192.168.56.102/24 dev enp0s8
+[root@localhost ~]# ip addr | grep inet
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+    inet6 fe80::ced5:fdde:8c70:ed26/64 scope link noprefixroute 
+    inet 192.168.56.101/24 brd 192.168.56.255 scope global dynamic enp0s8
+
+2) using centos network configuration file (statefull):
+
+[root@localhost ~]# vim /etc/sysconfig/network-scripts/ifcfg-enp0s8
+/*
+ifcfg-enp0s8:
+
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s8
+UUID=0af0728a-df83-472a-8916-f2d31ad32783
+DEVICE=enp0s8
+IPADDR1=192.168.56.101
+PREFIX1=24
+IPADDR2=192.168.56.102
+PREFIX2=24
+ONBOOT=yes
+*/
+
+[root@localhost ~]# systemctl restart network
+
+[root@localhost ~]# vim /etc/sysconfig/network-scripts/ifcfg-enp0s8
+# Удаляю строки:
+IPADDR1=192.168.56.102
+PREFIX1=24
+
+[root@localhost ~]# systemctl restart network
+
+3) using nmcli utility (statefull):
+[root@localhost ~]# nmcli device status
+DEVICE  TYPE      STATE           CONNECTION 
+enp0s3  ethernet  подключено      enp0s3     
+enp0s8  ethernet  подключено      enp0s8     
+lo      loopback  без управления  --     
+
+# Добавляю IPv4 адрес:
+[root@localhost ~]# nmcli connection modify enp0s8 +ipv4.addresses 192.168.56.102/24
+
+# Обновляю настройки:
+[root@localhost ~]# nmcli connection up enp0s8
+Соединение успешно активировано (адрес действующего D-Bus: /org/freedesktop/NetworkManager/ActiveConnection/7)
+[root@localhost ~]# ip addr | grep inet
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+    inet6 fe80::ced5:fdde:8c70:ed26/64 scope link noprefixroute 
+    inet 192.168.56.101/24 brd 192.168.56.255 scope global noprefixroute enp0s8
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global secondary noprefixroute enp0s8
+    inet6 fe80::ec06:4a04:2c65:f818/64 scope link noprefixroute 
+# Удаляю IPv4 адрес:
+nmcli connection modify enp0s8 -ipv4.addresses 192.168.56.102/24
+
+# Обновляю настройки:
+[root@localhost ~]# nmcli connection up enp0s8
+Соединение успешно активировано (адрес действующего D-Bus: /org/freedesktop/NetworkManager/ActiveConnection/8)
+[root@localhost ~]# ip addr | grep inet
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+    inet6 fe80::ced5:fdde:8c70:ed26/64 scope link noprefixroute 
+    inet 192.168.56.101/24 brd 192.168.56.255 scope global noprefixroute enp0s8
+    inet6 fe80::ec06:4a04:2c65:f818/64 scope link noprefixroute 
+
+2. You should have a possibility to use ssh client to connect to your node using new address from previous step. Run tcpdump in separate tmux session or separate connection before starting ssh client and capture packets that are related to this ssh connection. Find packets that are related to TCP session establish.
+
+[root@localhost ~]# nmcli connection modify enp0s8 +ipv4.addresses 192.168.56.102/24
+[root@localhost ~]# nmcli connection up enp0s8
+Соединение успешно активировано (адрес действующего D-Bus: /org/freedesktop/NetworkManager/ActiveConnection/9)
+[root@localhost ~]# ip addr | grep inet
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+    inet6 fe80::ced5:fdde:8c70:ed26/64 scope link noprefixroute 
+    inet 192.168.56.101/24 brd 192.168.56.255 scope global noprefixroute enp0s8
+    inet 192.168.56.102/24 brd 192.168.56.255 scope global secondary noprefixroute enp0s8
+    inet6 fe80::ec06:4a04:2c65:f818/64 scope link noprefixroute 
+
+[root@localhost ~]# tcpdump
+-bash: tcpdump: команда не найдена
+[root@localhost ~]# yum install tcpdump
+
+# Добавляю ключ на centos:
+MacBook-Air-User:ssh user$ cd ~/.ssh
+MacBook-Air-User:.ssh user$ ls
+config		epam_VB		epam_VB.pub	known_hosts
+MacBook-Air-User:.ssh user$ vim known_hosts 
+MacBook-Air-User:.ssh user$ vim config 
+MacBook-Air-User:.ssh user$ ssh root@192.168.56.102 
+The authenticity of host '192.168.56.102 (192.168.56.102)' can't be established.
+ECDSA key fingerprint is SHA256:3uPDHkddEzWiBhbLmzpvLGQdTPsL1kEV+lZ2WCyTVac.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.56.102' (ECDSA) to the list of known hosts.
+root@192.168.56.102's password: 
+Last login: Wed Nov 28 11:44:56 2018 from 192.168.56.1
+[root@localhost ~]# logout
+Connection to 192.168.56.102 closed.
+MacBook-Air-User:.ssh user$ cd
+
+MacBook-Air-User:~ user$ ssh-copy-id -i ~/.ssh/epam_VB.pub root@192.168.56.102
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/Users/user/.ssh/epam_VB.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+root@192.168.56.102's password: 
+
+Number of key(s) added:        1
+
+Now try logging into the machine, with:   "ssh 'root@192.168.56.102'"
+and check to make sure that only the key(s) you wanted were added.
+
+MacBook-Air-User:~ user$ ssh CentosVB
+Last login: Wed Nov 28 12:37:33 2018 from 192.168.56.1
+
+# Смотрю хост 192.168.56.102 в момент подключения:
+[root@localhost ~]# tcpdump -i enp0s8 src host 192.168.56.102 
+
+# Вывод tcpdump:
+/*
+homework6_TCPd.txt
+*/
+
+3. Close session. Find in tcpdump output packets that are related to TCP session closure.
+
+# Смотрю хост 192.168.56.102 в момент отключения:
+[root@localhost ~]# tcpdump -i enp0s8 src host 192.168.56.102
+
+# Вывод tcpdump:
+/*
+homework6_TCP_closure.txt
+*/ 
+
+4. Run tcpdump and request any http site in separate session. Find HTTP request and answer packets with ASCII data in it.  Tcpdump command must be as strict as possible to capture only needed packages for this http request.
+
+# Запрос http:
+[root@localhost ~]# wget http://mybioacta.com/wp-content/uploads/2018/02/wget-linux-command.png
+
+# tcpdump с загрузкой резудьтата в файл http_out.txt:
+[root@localhost ~]# tcpdump -w http_out.txt port 80
+tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+^C74 packets captured
+74 packets received by filter
+0 packets dropped by kernel
+
+[root@localhost ~]# tcpdump -w http_out.txt -A  port 80
+tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+^C113 packets captured
+113 packets received by filter
+0 packets dropped by kernel
+
+# Часть содержимого файла http_out.txt:
+/*
+^@^B^OÆd<9d>N½à^@P¾^Yg^L^@^@^@^@ ^Br^Poð^@^@^B^D^E´^D^B^H
+^@]^Y<8a>^@^@^@^@^A^C^C^G:nþ[Aó^D^@<^@^@^@<^@^@^@^H^@'Ù<85>éRT^@^R5^B^H^@E^@^@,ù;^@^@@^F^QÏÆd<9d>N
+^@^B^O^@P½à     P$^A¾^Yg^M`^Rÿÿ^W¬^@^@^B^D^E´^@^@:nþ[<98>ó^D^@6^@^@^@6^@^@^@RT^@^R5^B^H^@'Ù<85>é^H^@E^@^@(~<87>@^@@^FL<87>
+^@^B^OÆd<9d>N½à^@P¾^Yg^M        P$^BP^Pr^PoÜ^@^@:nþ[Ñô^D^@Ö^@^@^@Ö^@^@^@RT^@^R5^B^H^@'Ù<85>é^H^@E^@^@È~<88>@^@@^FKæ
+^@^B^OÆd<9d>N½à^@P¾^Yg^M        P$^BP^Xr^Pp|^@^@GET /wp-content/uploads/2018/02/wget-linux-command.png HTTP/1.1^M
+User-Agent: Wget/1.14 (linux-gnu)^M
+Accept: */*^M
+Host: mybioacta.com^M
+Connection: Keep-Alive^M
+*/
+
