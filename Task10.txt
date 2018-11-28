@@ -1,0 +1,16 @@
+Lection 10 homework:
+
+Boot process:
+1. * self-study: find an utility to inspect initrd file contents. Find all files that are related to XFS filesystem and give a short description for every file.
+2. * explain the difference between ordinary and rescue initrd images.
+3. * self-study: study dracut utility that is used for rebuilding initrd image. Give an example for adding driver/kernel module for your initrd and recreating it.
+4. enable recovery options for grub, update main configuration file and find new item in grub2 config in /boot.
+5. modify option vm.dirty_ratio:
+   1. using sysctl utility
+   2. using sysctl configuration files
+6. disable selinux using kernel cmdline
+
+iptables:
+1. with enabled firewalld:
+   1. add rule using firewall-cmd that will allow SSH access to your server *only* from network 192.168.56.0/24 and interface enp0s8 (if your network and/on interface name differs - change it accordingly)
+2. shutdown firewalld and add the same rules via iptables.
