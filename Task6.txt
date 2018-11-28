@@ -1,0 +1,9 @@
+Lection 6 Network homework:
+
+1. add secondary ip address to you second network interface enp0s8. Each point must be presented with commands and showing that new address was applied to the interface. To repeat adding address for points 2 and 3 address must be deleted (please add deleting address to you homework log) Methods:
+   1. using ip utility (stateless)
+   2. using centos network configuration file (statefull)
+   3. using nmcli utility (statefull)
+2. You should have a possibility to use ssh client to connect to your node using new address from previous step. Run tcpdump in separate tmux session or separate connection before starting ssh client and capture packets that are related to this ssh connection. Find packets that are related to TCP session establish.
+3. Close session. Find in tcpdump output packets that are related to TCP session closure.
+4. run tcpdump and request any http site in separate session. Find HTTP request and answer packets with ASCII data in it.  Tcpdump command must be as strict as possible to capture only needed packages for this http request.
