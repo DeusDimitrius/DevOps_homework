@@ -1,0 +1,154 @@
+4. Enable recovery options for grub, update main configuration file and find new item in grub2 config in /boot.
+
+1) Настройка загрузчика через файл /etc/default/grub:
+[root@localhost ~]# cat /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet"
+GRUB_DISABLE_RECOVERY="true"
+
+#GRUB_DISABLE_RECOVERY - не включать в меню пункты восстановления
+
+[root@localhost ~]# cd /boot/grub2
+[root@localhost grub2]# ls -lh
+итого 32K
+-rw-r--r--. 1 root root   64 окт 23 19:12 device.map
+drwxr-xr-x. 2 root root   25 окт 23 19:12 fonts
+-rw-r--r--. 1 root root 5,1K ноя 10 12:17 grub.cfg
+-rw-r--r--. 1 root root 1,0K ноя 10 12:17 grubenv
+drwxr-xr-x. 2 root root 8,0K окт 23 19:12 i386-pc
+drwxr-xr-x. 2 root root 4,0K окт 23 19:12 locale
+
+# В случае внесения изменений в файлы /etc/default/grub или /etc/grub.d/40_custom необходимо сформировать новое меню с помощью команды grub2-mkconfig -o /boot/grub2/grub.cfg
+
+[root@localhost grub2]# grub2-mkconfig -o /boot/grub2/grub.cfg
+Generating grub configuration file ...
+Found linux image: /boot/vmlinuz-3.10.0-862.14.4.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-862.14.4.el7.x86_64.img
+Found linux image: /boot/vmlinuz-3.10.0-862.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-862.el7.x86_64.img
+Found linux image: /boot/vmlinuz-0-rescue-3df6e81b710d4dd1b40b2a19862d544b
+Found initrd image: /boot/initramfs-0-rescue-3df6e81b710d4dd1b40b2a19862d544b.img
+done
+
+5. modify option vm.dirty_ratio:
+   1. using sysctl utility
+   2. using sysctl configuration files
+
+#Значение vm.dirty_ratio означает долю свободной системной памяти в процентах, по достижении которой процесс, ведущий запись на диск, инициирует запись "грязных" данных ("грязными" - данные, хранящиеся в дисковом кэше и которые ожидают своего сброса на диск).
+ 
+1) Using sysctl utility:
+
+# Смотрю текущее значение:
+[root@localhost ~]# sysctl vm.dirty_ratio
+vm.dirty_ratio = 30
+
+# Меняю значение на 25 и обратно:
+[root@localhost ~]# sysctl -w vm.dirty_ratio=25
+vm.dirty_ratio = 25
+[root@localhost ~]# sysctl vm.dirty_ratio
+vm.dirty_ratio = 25
+[root@localhost ~]# sysctl -w vm.dirty_ratio=30
+vm.dirty_ratio = 30
+[root@localhost ~]# sysctl vm.dirty_ratio
+vm.dirty_ratio = 30
+
+2) Using sysctl configuration files:
+[root@localhost sys]# cd /proc/sys/vm
+[root@localhost vm]# ls -lh
+итого 0
+-rw-r--r--. 1 root root 0 ноя 28 17:56 admin_reserve_kbytes
+-rw-r--r--. 1 root root 0 ноя 28 17:56 block_dump
+--w-------. 1 root root 0 ноя 28 17:56 compact_memory
+-rw-r--r--. 1 root root 0 ноя 28 17:56 dirty_background_bytes
+-rw-r--r--. 1 root root 0 ноя 24 15:40 dirty_background_ratio
+-rw-r--r--. 1 root root 0 ноя 28 17:56 dirty_bytes
+-rw-r--r--. 1 root root 0 ноя 28 17:56 dirty_expire_centisecs
+-rw-r--r--. 1 root root 0 ноя 28 17:43 dirty_ratio
+-rw-r--r--. 1 root root 0 ноя 28 17:56 dirty_writeback_centisecs
+-rw-r--r--. 1 root root 0 ноя 28 17:56 drop_caches
+-rw-r--r--. 1 root root 0 ноя 28 17:56 extfrag_threshold
+-rw-r--r--. 1 root root 0 ноя 28 17:56 hugepages_treat_as_movable
+-rw-r--r--. 1 root root 0 ноя 28 17:56 hugetlb_shm_group
+-rw-r--r--. 1 root root 0 ноя 28 17:56 laptop_mode
+-rw-r--r--. 1 root root 0 ноя 28 17:56 legacy_va_layout
+-rw-r--r--. 1 root root 0 ноя 28 17:56 lowmem_reserve_ratio
+-rw-r--r--. 1 root root 0 ноя 28 17:56 max_map_count
+-rw-r--r--. 1 root root 0 ноя 28 17:56 memory_failure_early_kill
+-rw-r--r--. 1 root root 0 ноя 28 17:56 memory_failure_recovery
+-rw-r--r--. 1 root root 0 ноя 28 17:56 min_free_kbytes
+-rw-r--r--. 1 root root 0 ноя 28 17:56 min_slab_ratio
+-rw-r--r--. 1 root root 0 ноя 28 17:56 min_unmapped_ratio
+-rw-r--r--. 1 root root 0 ноя 28 17:56 mmap_min_addr
+-rw-------. 1 root root 0 ноя 28 17:56 mmap_rnd_bits
+-rw-------. 1 root root 0 ноя 28 17:56 mmap_rnd_compat_bits
+-rw-r--r--. 1 root root 0 ноя 28 17:56 nr_hugepages
+-rw-r--r--. 1 root root 0 ноя 28 17:56 nr_hugepages_mempolicy
+-rw-r--r--. 1 root root 0 ноя 28 17:56 nr_overcommit_hugepages
+-r--r--r--. 1 root root 0 ноя 28 17:56 nr_pdflush_threads
+-rw-r--r--. 1 root root 0 ноя 28 17:56 numa_zonelist_order
+-rw-r--r--. 1 root root 0 ноя 28 17:56 oom_dump_tasks
+-rw-r--r--. 1 root root 0 ноя 28 17:56 oom_kill_allocating_task
+-rw-r--r--. 1 root root 0 ноя 28 17:56 overcommit_kbytes
+-rw-r--r--. 1 root root 0 ноя 28 17:56 overcommit_memory
+-rw-r--r--. 1 root root 0 ноя 28 17:56 overcommit_ratio
+-rw-r--r--. 1 root root 0 ноя 28 17:56 page-cluster
+-rw-r--r--. 1 root root 0 ноя 28 17:56 panic_on_oom
+-rw-r--r--. 1 root root 0 ноя 28 17:56 percpu_pagelist_fraction
+-rw-r--r--. 1 root root 0 ноя 28 17:56 stat_interval
+-rw-r--r--. 1 root root 0 ноя 24 15:40 swappiness
+-rw-r--r--. 1 root root 0 ноя 28 17:56 user_reserve_kbytes
+-rw-r--r--. 1 root root 0 ноя 28 17:56 vfs_cache_pressure
+-rw-r--r--. 1 root root 0 ноя 28 17:56 zone_reclaim_mode
+[root@localhost vm]# cat dirty_ratio 
+30
+
+[root@localhost vm]# echo 25 > /proc/sys/vmdirty_ratio
+-bash: /proc/sys/vmdirty_ratio: Нет такого файла или каталога
+[root@localhost vm]# echo 25 > /proc/sys/vm/dirty_ratio
+[root@localhost vm]# sysctl vm.dirty_ratio
+vm.dirty_ratio = 25
+
+?# Насколько я понял, в centos нет такой возможности, как в debian системах - изменить значения файла /etc/sysctl.conf добавив строку:
+vm.dirty_ratio = значение
+
+6. Disable selinux using kernel cmdline:
+
+# Использую временное отключение selinux:
+[root@localhost ~]# ls -Z /etc/ | head
+-rw-r--r--. root root   system_u:object_r:adjtime_t:s0   adjtime
+-rw-r--r--. root root   system_u:object_r:etc_aliases_t:s0 aliases
+-rw-r--r--. root root   system_u:object_r:etc_aliases_t:s0 aliases.db
+drwxr-xr-x. root root   system_u:object_r:etc_t:s0       alternatives
+-rw-------. root root   system_u:object_r:etc_t:s0       anacrontab
+-rw-r--r--. root root   system_u:object_r:etc_t:s0       asound.conf
+drwxr-x---. root root   system_u:object_r:etc_t:s0       audisp
+drwxr-x---. root root   system_u:object_r:auditd_etc_t:s0 audit
+drwxr-xr-x. root root   system_u:object_r:etc_t:s0       bash_completion.d
+-rw-r--r--. root root   system_u:object_r:etc_t:s0       bashrc
+
+# Нашел четыре способа отключения SELinux. Однако по какой-то причине не все работают.
+# Например такой не работает:
+cat /selinux/enforce
+Должен показать значение 0 или 1
+echo 0 > /selinux/enforce
+Должен выключиться
+Но файла /selinux не существует.
+
+# Смотрю состояние командой getenforce:
+[root@localhost selinux]# getenforce 
+Enforcing
+
+# Кидаю команду на отключение:
+[root@localhost selinux]# setenforce Permissive
+[root@localhost selinux]# getenforce 
+Permissive
+
+# Меняю обратно:
+[root@localhost selinux]# setenforce Enforcing
+[root@localhost selinux]# getenforce 
+Enforcing
+
