@@ -1,0 +1,378 @@
+2.1 Создайте отчет по логам из /var/log и сохраните в текстовый файл.
+[root@localhost Homework8]# locate /var/log > log_report.txt
+[root@localhost Homework8]# wc -l log_report.txt 
+74 log_report.txt
+
+2.2 Создайте отчет по размерам файлов и папок директории /home и сохраните в текстовый файл.
+[root@localhost Homework8]# du -h /home/ > FD_report.txt
+[root@localhost Homework8]# wc -l FD_report.txt 
+25 FD_report.txt
+
+[root@localhost Homework8]# cat FD_report.txt 
+1,1M	/home/dmitrii/images/127.0.0.1:8081
+1,1M	/home/dmitrii/images
+0	/home/dmitrii/dir1
+16K	/home/dmitrii/Homework7
+13M	/home/dmitrii/Homework8
+0	/home/dmitrii/dir2
+32K	/home/dmitrii/.ssh
+0	/home/dmitrii/Homework4
+32M	/home/dmitrii
+12K	/home/testuser
+12K	/home/bob
+12K	/home/alice
+12K	/home/eve
+12K	/home/glen
+12K	/home/antony
+16K	/home/lesly
+0	/home/students
+16K	/home/holmes
+12K	/home/watson
+12K	/home/lestrade
+16K	/home/gregson
+16K	/home/jones
+12K	/home/one
+12K	/home/two
+32M	/home/
+
+2.3 Для пользователей Alice и Bob создайте общую папку и два общих файла, и создайте в их домашних директориях все виды ссылок из этих объектов.
+[root@localhost Homework8]# userdel -r bob
+[root@localhost Homework8]# userdel -r alice
+
+[root@localhost Homework8]# mkdir /home/general
+[root@localhost home]# cd general
+[root@localhost general]# touch one two
+[root@localhost general]# ls -lh
+итого 0
+-rw-r--r--. 1 root root 0 ноя 25 01:28 one
+-rw-r--r--. 1 root root 0 ноя 25 01:28 two
+
+[root@localhost general]# groupadd hw8
+[root@localhost general]# useradd -g hw8 -p uh6rew56qs bob
+[root@localhost general]# useradd -g hw8 -p uh6rew56qt alice
+[root@localhost general]# ls -lh /home/
+итого 4,0K
+drwx------. 2 alice    hw8            76 ноя 25 01:35 alice
+drwx------. 2 antony   students       62 окт 29 13:29 antony
+drwx------. 2 bob      hw8            76 ноя 25 01:35 bob
+drwx------. 9 dmitrii  dmitrii      4,0K ноя 24 23:05 dmitrii
+drwx------. 2 eve      sales          62 окт 29 11:53 eve
+drwxr-xr-x. 2 root     root           28 ноя 25 01:28 general
+drwx------. 2 glen     students       62 окт 29 13:28 glen
+drwx------. 2 gregson  scotlandyard   83 ноя  7 14:52 gregson
+drwx------. 2 holmes   bakerstreet    83 ноя  7 14:52 holmes
+drwx------. 2 jones    scotlandyard   83 ноя  7 14:52 jones
+drwx------. 2 lesly    students       83 окт 29 14:25 lesly
+drwx------. 2 lestrade scotlandyard   62 окт 29 15:00 lestrade
+drwxrws---. 2 root     students       58 окт 29 14:23 students
+drwx------. 2 testuser testuser       62 окт 27 14:36 testuser
+drwx------. 2 watson   bakerstreet    62 окт 29 14:59 watson
+
+[root@localhost home]# chown -R :hw8 general
+
+[root@localhost home]# su bob
+[bob@localhost home]$ cd general
+[bob@localhost general]$ ls -lh
+итого 0
+-rw-r--r--. 1 root hw8 0 ноя 25 01:28 one
+-rw-r--r--. 1 root hw8 0 ноя 25 01:28 two
+
+[root@localhost home]# chmod -R 770 general
+
+[bob@localhost ~]$ ln /home/general/one one
+[bob@localhost ~]$ ln -s /home/general/one one_soft
+[bob@localhost ~]$ ln -s /home/general/two two  
+[bob@localhost ~]$ ln /home/general/two two_hard 
+[bob@localhost ~]$ ls -lh
+[bob@localhost ~]$ ls -lh
+итого 0
+-rwxrwx---. 3 root hw8  0 ноя 25 01:28 one
+lrwxrwxrwx. 1 bob  hw8 17 ноя 25 01:55 one_soft -> /home/general/one
+lrwxrwxrwx. 1 bob  hw8 17 ноя 25 02:00 two -> /home/general/two
+-rwxrwx---. 3 root hw8  0 ноя 25 01:28 two_hard
+
+[alice@localhost ~]$ ln /home/general/one one
+[alice@localhost ~]$ ln -s /home/general/one one_soft
+[alice@localhost ~]$ ln -s /home/general/two two
+[alice@localhost ~]$ ln /home/general/two two_hard
+
+2.4 Удалите эти объекты и выведите результаты обращения к ссылкам. Удалите ссылки.
+[bob@localhost ~]$ echo 'Hello!' > one
+[bob@localhost ~]$ cat one
+Hello!
+[bob@localhost ~]$ cat /home/general/one
+Hello!
+[bob@localhost ~]$ cat one_soft
+Hello!
+
+[root@localhost bob]# cd /home/general
+[root@localhost general]# rm one two
+rm: удалить обычный файл «one»? y
+rm: удалить пустой обычный файл «two»? y
+
+[root@localhost general]# su bob
+[bob@localhost general]$ cd ~
+[bob@localhost ~]$ ls -lh
+итого 4,0K
+-rwxrwx---. 2 root hw8  7 ноя 25 02:08 one
+lrwxrwxrwx. 1 bob  hw8 17 ноя 25 01:55 one_soft -> /home/general/one
+lrwxrwxrwx. 1 bob  hw8 17 ноя 25 02:00 two -> /home/general/two
+-rwxrwx---. 2 root hw8  0 ноя 25 01:28 two_hard
+
+[bob@localhost ~]$ cat one
+Hello!
+[bob@localhost ~]$ cat two
+cat: two: Нет такого файла или каталога
+[bob@localhost ~]$ cat two_hard
+[bob@localhost ~]$ cat one_soft
+cat: one_soft: Нет такого файла или каталога
+
+[bob@localhost ~]$ rm one one_soft two two_hard
+[bob@localhost ~]$ ls -lh
+итого 0
+
+[alice@localhost ~]$ rm one one_soft two two_hard
+[alice@localhost ~]$ ls -lh
+итого 0
+
+3.1 Создайте директорию trash и добавьте в неё поддиректории и файлы от нескольких пользователей в любом порядке.
+
+[root@localhost ~]# mkdir /home/trash
+[root@localhost ~]# chmod 777 /home/trash/
+[bob@localhost Homework8]$ mkdir ~/folder{1..4}
+[alice@localhost folder1]$ mkdir ~/Alice{1..4}
+[alice@localhost root]$ touch ~/alice_file{1..5}
+[root@localhost ~]# cp /home/dmitrii/sed3.txt /home/dmitrii/Homework8/trash
+[alice@localhost ~]$ cp -R /home/alice/Alice{1..4} /home/trash
+[alice@localhost ~]$ cp /home/alice/alice_file{1..5} /home/trash
+[bob@localhost ~]$ cp -R /home/bob/folder{1..4} /home/trash
+
+[root@localhost ~]# ls -lh /home/trash
+итого 64K
+drwxr-xr-x. 2 alice hw8    6 ноя 25 03:12 Alice1
+drwxr-xr-x. 2 alice hw8    6 ноя 25 03:12 Alice2
+drwxr-xr-x. 2 alice hw8    6 ноя 25 03:12 Alice3
+drwxr-xr-x. 2 alice hw8    6 ноя 25 03:12 Alice4
+-rw-r--r--. 1 alice hw8    0 ноя 25 03:13 alice_file1
+-rw-r--r--. 1 alice hw8    0 ноя 25 03:13 alice_file2
+-rw-r--r--. 1 alice hw8    0 ноя 25 03:13 alice_file3
+-rw-r--r--. 1 alice hw8    0 ноя 25 03:13 alice_file4
+-rw-r--r--. 1 alice hw8    0 ноя 25 03:13 alice_file5
+drwxr-xr-x. 2 bob   hw8    6 ноя 25 03:10 folder1
+drwxr-xr-x. 2 bob   hw8    6 ноя 25 03:10 folder2
+drwxr-xr-x. 2 bob   hw8    6 ноя 25 03:10 folder3
+drwxr-xr-x. 2 bob   hw8    6 ноя 25 03:10 folder4
+-rw-r--r--. 1 root  root 62K ноя 25 03:14 sed3.txt
+
+[root@localhost ~]# chmod 777 /home/dmitrii/Homework8/trash/
+
+3.2 Скачайте изображения разного типа и произвольного размера в эти папки. Сделайте им сокращенные и читабельные имена. Создание и загрузку произведите с временными интервалами. Создайте ссылки для файлов и папок внутри директории trash. Используйте locate до и после загрузки. 
+
+-Обновляем список файлов:
+[root@localhost home]# updatedb
+
+[root@localhost home]# locate trash/
+/home/trash/Alice1
+/home/trash/Alice2
+/home/trash/Alice3
+/home/trash/Alice4
+/home/trash/alice_file1
+/home/trash/alice_file2
+/home/trash/alice_file3
+/home/trash/alice_file4
+/home/trash/alice_file5
+/home/trash/folder1
+/home/trash/folder2
+/home/trash/folder3
+/home/trash/folder4
+/home/trash/sed3.txt
+
+- Загрузка изображений:
+[root@localhost /]# wget -P /home/trash/Alice1 https://helpugroup.ru/wp-content/uploads/2018/01/Linux-widescreen.jpg
+--2018-11-25 03:30:09--  https://helpugroup.ru/wp-content/uploads/2018/01/Linux-widescreen.jpg
+Распознаётся helpugroup.ru (helpugroup.ru)... 104.28.3.247, 104.28.2.247, 2606:4700:30::681c:3f7, ...
+Подключение к helpugroup.ru (helpugroup.ru)|104.28.3.247|:443... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа... 200 OK
+Длина: 78851 (77K) [image/jpeg]
+Сохранение в: «/home/trash/Alice1/Linux-widescreen.jpg»
+
+100%[=========================================================>] 78 851      --.-K/s   за 0,1s    
+
+2018-11-25 03:30:11 (668 KB/s) - «/home/trash/Alice1/Linux-widescreen.jpg» сохранён [78851/78851]
+
+
+[root@localhost /]# wget -P /home/trash/folder1 http://wallpaperget.com/images/linux-hd-wallpaper-28.jpg
+--2018-11-25 03:34:43--  http://wallpaperget.com/images/linux-hd-wallpaper-28.jpg
+Распознаётся wallpaperget.com (wallpaperget.com)... 195.201.84.17
+Подключение к wallpaperget.com (wallpaperget.com)|195.201.84.17|:80... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа... 200 OK
+Длина: 525095 (513K) [image/jpeg]
+Сохранение в: «/home/trash/folder1/linux-hd-wallpaper-28.jpg»
+
+100%[=========================================================>] 525 095      556KB/s   за 0,9s   
+
+2018-11-25 03:34:45 (556 KB/s) - «/home/trash/folder1/linux-hd-wallpaper-28.jpg» сохранён [525095/525095]
+
+
+[root@localhost /]# wget -P /home/trash/folder2 http://pngimg.com/uploads/linux/linux_PNG51.png
+--2018-11-25 03:39:59--  http://pngimg.com/uploads/linux/linux_PNG51.png
+Распознаётся pngimg.com (pngimg.com)... 104.27.120.26, 104.27.121.26, 2606:4700:20::681b:781a, ...
+Подключение к pngimg.com (pngimg.com)|104.27.120.26|:80... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа... 200 OK
+Длина: 36878 (36K) [image/png]
+Сохранение в: «/home/trash/folder2/linux_PNG51.png»
+
+100%[=========================================================>] 36 878      --.-K/s   за 0,1s    
+
+2018-11-25 03:39:59 (310 KB/s) - «/home/trash/folder2/linux_PNG51.png» сохранён [36878/36878]
+
+- Переименовываю файлы:
+[root@localhost folder2]# mv {linux_PNG51,logo}.png
+[root@localhost folder1]# mv {linux-hd-wallpaper-28,linux28}.jpg
+[root@localhost Alice1]# mv {Linux-widescreen,widescr}.jpg
+
+[root@localhost home]# updatedb && locate trash/
+/home/trash/Alice1
+/home/trash/Alice2
+/home/trash/Alice3
+/home/trash/Alice4
+/home/trash/alice_file1
+/home/trash/alice_file2
+/home/trash/alice_file3
+/home/trash/alice_file4
+/home/trash/alice_file5
+/home/trash/folder1
+/home/trash/folder2
+/home/trash/folder3
+/home/trash/folder4
+/home/trash/sed3.txt
+/home/trash/Alice1/widescr.jpg
+/home/trash/folder1/linux28.jpg
+/home/trash/folder2/logo.png
+
+- Создаю ссылки:
+[root@localhost trash]# ln /home/trash/Alice1/widescr.jpg widescr
+[root@localhost trash]# ln -s /home/trash/Alice1/widescr.jpg widescr_s
+[root@localhost trash]# ln /home/trash/folder1/linux28.jpg lnx28
+[root@localhost trash]# ln -s /home/trash/folder1/linux28.jpg lnx28_s
+[root@localhost trash]# ln /home/trash/folder2/logo.jpg logo
+[root@localhost trash]# ln /home/trash/folder2/logo.png logo
+[root@localhost trash]# ln -s /home/trash/folder2/logo.png logo_s
+[root@localhost trash]# ln -s /home/trash/folder3 fld3
+[root@localhost trash]# ln /home/trash/Alice3 Alice
+ln: «/home/trash/Alice3»: не допускается создавать жёсткие ссылки на каталоги
+[root@localhost trash]# ln -s /home/trash/Alice3 Alice
+[root@localhost trash]# ln -s /home/trash/sed3.txt sed
+[root@localhost trash]# ln  /home/trash/sed3.txt sed_hard
+
+[root@localhost home]# updatedb && locate trash/
+
+- Поиск файлов и папок:
+[root@localhost home]# find trash -name *.jpg
+trash/folder1/linux28.jpg
+trash/Alice1/widescr.jpg
+[root@localhost home]# find trash -name *.png
+trash/folder2/logo.png
+
+[root@localhost home]# find trash -regex '.*\(jpg\|png\|jpeg\).*' 
+trash/folder1/linux28.jpg
+trash/folder2/logo.png
+trash/Alice1/widescr.jpg
+
+- Загружаю ссылку html:
+[root@localhost home]# wget -A .html -P trash/folder4/ https://unixforum.org/
+--2018-11-25 04:26:10--  https://unixforum.org/
+Распознаётся unixforum.org (unixforum.org)... 109.68.191.155
+Подключение к unixforum.org (unixforum.org)|109.68.191.155|:443... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа... 200 OK
+Длина: нет данных [text/html]
+Сохранение в: «trash/folder4/index.html»
+
+- Жесткие ссылки на файл:
+[root@localhost trash]# find . -samefile ./folder1/linux28.jpg
+./folder1/linux28.jpg
+./lnx28
+
+- По размеру:
+[root@localhost trash]# find . -size +100
+./folder1/linux28.jpg
+./folder4/index.html
+./Alice1/widescr.jpg
+./sed3.txt
+./widescr
+./lnx28
+./sed_hard
+
+- Все символические ссылки:
+[root@localhost trash]# find . -type l
+./widescr_s
+./lnx28_s
+./logo_s
+./fld3
+./Alice
+./sed
+
+- Все пустые файлы:
+[root@localhost trash]# find . -empty
+./folder3
+./Alice2
+./Alice3
+./Alice4
+./alice_file1
+./alice_file2
+./alice_file3
+./alice_file4
+./alice_file5
+
+- По времени:
+[root@localhost trash]# find . -type f -mmin +1000
+./folder1/linux28.jpg
+./folder2/logo.png
+./Alice1/widescr.jpg
+./widescr
+./lnx28
+./logo
+
+[root@localhost trash]# find . -ctime -2
+.
+./folder1
+./folder1/linux28.jpg
+./folder2
+./folder2/logo.png
+./folder3
+./folder4
+./folder4/index.html
+./Alice1
+./Alice1/widescr.jpg
+./Alice2
+./Alice3
+./Alice4
+./alice_file1
+./alice_file2
+./alice_file3
+./alice_file4
+./alice_file5
+./sed3.txt
+./widescr
+./widescr_s
+./lnx28
+./lnx28_s
+./logo
+./logo_s
+./fld3
+./Alice
+./sed
+./sed_hard
+
+[root@localhost trash]# find . -type d
+.
+./folder1
+./folder2
+./folder3
+./folder4
+./Alice1
+./Alice2
+./Alice3
+./Alice4
+
+[root@localhost home]# rm -r trash

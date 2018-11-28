@@ -1,0 +1,316 @@
+1.Создайте и установите rpm пакет, который будет запускать скрипт epamstudent. Он должен получать текст из консоли и выводить его после строки Your text: на новой строке.
+
+1) Устанавливаю инструменты для сборки:
+[root@localhost Homework8]# yum install -y rpmdevtools
+Загружены модули: fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: dedic.sh
+ * epel: mirror.nsc.liu.se
+ * extras: mirror.reconn.ru
+ * updates: dedic.sh
+Разрешение зависимостей
+There are unfinished transactions remaining. You might consider running yum-complete-transaction, or "yum-complete-transaction --cleanup-only" and "yum history redo last", first to finish them. If those don't work you'll have to try removing/installing packages by hand (maybe package-cleanup can help).
+--> Проверка сценария
+---> Пакет rpmdevtools.noarch 0:8.3-5.el7 помечен для установки
+--> Обработка зависимостей: rpm-build >= 4.4.2.3 пакета: rpmdevtools-8.3-5.el7.noarch
+--> Обработка зависимостей: emacs-filesystem пакета: rpmdevtools-8.3-5.el7.noarch
+--> Проверка сценария
+---> Пакет emacs-filesystem.noarch 1:24.3-20.el7_4 помечен для установки
+---> Пакет rpm-build.x86_64 0:4.11.3-32.el7 помечен для установки
+--> Обработка зависимостей: patch >= 2.5 пакета: rpm-build-4.11.3-32.el7.x86_64
+--> Обработка зависимостей: elfutils >= 0.128 пакета: rpm-build-4.11.3-32.el7.x86_64
+--> Обработка зависимостей: unzip пакета: rpm-build-4.11.3-32.el7.x86_64
+--> Обработка зависимостей: system-rpm-config пакета: rpm-build-4.11.3-32.el7.x86_64
+--> Обработка зависимостей: perl(Thread::Queue) пакета: rpm-build-4.11.3-32.el7.x86_64
+--> Обработка зависимостей: bzip2 пакета: rpm-build-4.11.3-32.el7.x86_64
+--> Обработка зависимостей: /usr/bin/gdb-add-index пакета: rpm-build-4.11.3-32.el7.x86_64
+--> Проверка сценария
+---> Пакет bzip2.x86_64 0:1.0.6-13.el7 помечен для установки
+---> Пакет elfutils.x86_64 0:0.170-4.el7 помечен для установки
+---> Пакет gdb.x86_64 0:7.6.1-110.el7 помечен для установки
+---> Пакет patch.x86_64 0:2.7.1-10.el7_5 помечен для установки
+---> Пакет perl-Thread-Queue.noarch 0:3.02-2.el7 помечен для установки
+---> Пакет redhat-rpm-config.noarch 0:9.1.0-80.el7.centos помечен для установки
+--> Обработка зависимостей: dwz >= 0.4 пакета: redhat-rpm-config-9.1.0-80.el7.centos.noarch
+--> Обработка зависимостей: zip пакета: redhat-rpm-config-9.1.0-80.el7.centos.noarch
+--> Обработка зависимостей: perl-srpm-macros пакета: redhat-rpm-config-9.1.0-80.el7.centos.noarch
+---> Пакет unzip.x86_64 0:6.0-19.el7 помечен для установки
+--> Проверка сценария
+---> Пакет dwz.x86_64 0:0.11-3.el7 помечен для установки
+---> Пакет perl-srpm-macros.noarch 0:1-8.el7 помечен для установки
+---> Пакет zip.x86_64 0:3.0-11.el7 помечен для установки
+--> Проверка зависимостей окончена
+
+Зависимости определены
+
+===================================================================================================
+ Package                    Архитектура     Версия                          Репозиторий      Размер
+===================================================================================================
+Установка:
+ rpmdevtools                noarch          8.3-5.el7                       base              97 k
+Установка зависимостей:
+ bzip2                      x86_64          1.0.6-13.el7                    base              52 k
+ dwz                        x86_64          0.11-3.el7                      base              99 k
+ elfutils                   x86_64          0.170-4.el7                     base             282 k
+ emacs-filesystem           noarch          1:24.3-20.el7_4                 base              58 k
+ gdb                        x86_64          7.6.1-110.el7                   base             2.4 M
+ patch                      x86_64          2.7.1-10.el7_5                  updates          110 k
+ perl-Thread-Queue          noarch          3.02-2.el7                      base              17 k
+ perl-srpm-macros           noarch          1-8.el7                         base             4.6 k
+ redhat-rpm-config          noarch          9.1.0-80.el7.centos             base              79 k
+ rpm-build                  x86_64          4.11.3-32.el7                   base             147 k
+ unzip                      x86_64          6.0-19.el7                      base             170 k
+ zip                        x86_64          3.0-11.el7                      base             260 k
+
+Итого за операцию
+===================================================================================================
+Установить  1 пакет (+12 зависимых)
+
+Объем загрузки: 3.8 M
+Объем изменений: 10 M
+Downloading packages:
+(1/13): dwz-0.11-3.el7.x86_64.rpm                                           |  99 kB  00:00:00     
+(2/13): emacs-filesystem-24.3-20.el7_4.noarch.rpm                           |  58 kB  00:00:01     
+(3/13): elfutils-0.170-4.el7.x86_64.rpm                                     | 282 kB  00:00:01     
+(4/13): perl-Thread-Queue-3.02-2.el7.noarch.rpm                             |  17 kB  00:00:00     
+(5/13): perl-srpm-macros-1-8.el7.noarch.rpm                                 | 4.6 kB  00:00:00     
+(6/13): redhat-rpm-config-9.1.0-80.el7.centos.noarch.rpm                    |  79 kB  00:00:00     
+(7/13): bzip2-1.0.6-13.el7.x86_64.rpm                                       |  52 kB  00:00:02     
+(8/13): patch-2.7.1-10.el7_5.x86_64.rpm                                     | 110 kB  00:00:01     
+(9/13): rpmdevtools-8.3-5.el7.noarch.rpm                                    |  97 kB  00:00:00     
+(10/13): rpm-build-4.11.3-32.el7.x86_64.rpm                                 | 147 kB  00:00:01     
+(11/13): unzip-6.0-19.el7.x86_64.rpm                                        | 170 kB  00:00:00     
+(12/13): zip-3.0-11.el7.x86_64.rpm                                          | 260 kB  00:00:00     
+(13/13): gdb-7.6.1-110.el7.x86_64.rpm                                       | 2.4 MB  00:00:04     
+---------------------------------------------------------------------------------------------------
+Общий размер                                                       840 kB/s | 3.8 MB  00:00:04     
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Установка   : perl-srpm-macros-1-8.el7.noarch                                               1/13 
+  Установка   : dwz-0.11-3.el7.x86_64                                                         2/13 
+  Установка   : unzip-6.0-19.el7.x86_64                                                       3/13 
+  Установка   : patch-2.7.1-10.el7_5.x86_64                                                   4/13 
+  Установка   : gdb-7.6.1-110.el7.x86_64                                                      5/13 
+  Установка   : elfutils-0.170-4.el7.x86_64                                                   6/13 
+  Установка   : perl-Thread-Queue-3.02-2.el7.noarch                                           7/13 
+  Установка   : zip-3.0-11.el7.x86_64                                                         8/13 
+  Установка   : redhat-rpm-config-9.1.0-80.el7.centos.noarch                                  9/13 
+  Установка   : bzip2-1.0.6-13.el7.x86_64                                                    10/13 
+  Установка   : rpm-build-4.11.3-32.el7.x86_64                                               11/13 
+  Установка   : 1:emacs-filesystem-24.3-20.el7_4.noarch                                      12/13 
+  Установка   : rpmdevtools-8.3-5.el7.noarch                                                 13/13 
+  Проверка    : 1:emacs-filesystem-24.3-20.el7_4.noarch                                       1/13 
+  Проверка    : bzip2-1.0.6-13.el7.x86_64                                                     2/13 
+  Проверка    : rpm-build-4.11.3-32.el7.x86_64                                                3/13 
+  Проверка    : redhat-rpm-config-9.1.0-80.el7.centos.noarch                                  4/13 
+  Проверка    : zip-3.0-11.el7.x86_64                                                         5/13 
+  Проверка    : perl-Thread-Queue-3.02-2.el7.noarch                                           6/13 
+  Проверка    : elfutils-0.170-4.el7.x86_64                                                   7/13 
+  Проверка    : gdb-7.6.1-110.el7.x86_64                                                      8/13 
+  Проверка    : patch-2.7.1-10.el7_5.x86_64                                                   9/13 
+  Проверка    : unzip-6.0-19.el7.x86_64                                                      10/13 
+  Проверка    : rpmdevtools-8.3-5.el7.noarch                                                 11/13 
+  Проверка    : dwz-0.11-3.el7.x86_64                                                        12/13 
+  Проверка    : perl-srpm-macros-1-8.el7.noarch                                              13/13 
+
+Установлено:
+  rpmdevtools.noarch 0:8.3-5.el7                                                                   
+
+Установлены зависимости:
+  bzip2.x86_64 0:1.0.6-13.el7                         dwz.x86_64 0:0.11-3.el7                     
+  elfutils.x86_64 0:0.170-4.el7                       emacs-filesystem.noarch 1:24.3-20.el7_4     
+  gdb.x86_64 0:7.6.1-110.el7                          patch.x86_64 0:2.7.1-10.el7_5               
+  perl-Thread-Queue.noarch 0:3.02-2.el7               perl-srpm-macros.noarch 0:1-8.el7           
+  redhat-rpm-config.noarch 0:9.1.0-80.el7.centos      rpm-build.x86_64 0:4.11.3-32.el7            
+  unzip.x86_64 0:6.0-19.el7                           zip.x86_64 0:3.0-11.el7                     
+
+Выполнено!
+
+2) Создаю отдельного пользователя для создания пакета:
+[root@localhost Homework8]# groupadd RPM
+[root@localhost Homework8]# useradd -g RPM -p uh6rew56qs dmitriirpm
+[root@localhost Homework8]# su dmitriirpm
+[dmitriirpm@localhost Homework8]$ cd
+
+3) Строю дерево rpm:
+[dmitriirpm@localhost ~]$ rpmdev-setuptree
+[dmitriirpm@localhost ~]$ mkdir -p ~/rpm/{BUILD,RPMS,SOURCES,SPECS,SRPMS,tmp}
+
+[dmitriirpm@localhost ~]$ ls -lh rpm
+итого 0
+drwxr-xr-x. 3 dmitriirpm RPM 25 ноя 25 09:27 BUILD
+drwxr-xr-x. 2 dmitriirpm RPM  6 ноя 25 09:25 BUILDROOT
+drwxr-xr-x. 2 dmitriirpm RPM  6 ноя 25 08:53 RPMS
+drwxr-xr-x. 3 dmitriirpm RPM 51 ноя 25 09:22 SOURCES
+drwxr-xr-x. 2 dmitriirpm RPM 30 ноя 25 09:26 SPECS
+drwxr-xr-x. 2 dmitriirpm RPM  6 ноя 25 08:53 SRPMS
+drwxr-xr-x. 2 dmitriirpm RPM 28 ноя 25 09:27 tmp
+
+4) Редактируем макрос:
+[dmitriirpm@localhost redhat]$ vim ~/.rpmmacros
+
+/*
+%packager Dmitry Balashov
+
+%_topdir %(echo $HOME)/rpm
+
+%_smp_mflags %( \
+    [ -z "$RPM_BUILD_NCPUS" ] \\\
+        && RPM_BUILD_NCPUS="`/usr/bin/nproc 2>/dev/null || \\\
+                             /usr/bin/getconf _NPROCESSORS_ONLN`"; \\\
+    if [ "$RPM_BUILD_NCPUS" -gt 16 ]; then \\\
+        echo "-j16"; \\\
+    elif [ "$RPM_BUILD_NCPUS" -gt 3 ]; then \\\
+        echo "-j$RPM_BUILD_NCPUS"; \\\
+    else \\\
+        echo "-j3"; \\\
+    fi )
+
+%__arch_install_post \
+    [ "%{buildarch}" = "noarch" ] || QA_CHECK_RPATHS=1 ; \
+    case "${QA_CHECK_RPATHS:-}" in [1yY]*) /usr/lib/rpm/check-rpaths ;; esac \
+    /usr/lib/rpm/check-buildroot
+*/
+
+5) Создание скрипта:
+[dmitriirpm@localhost SOURCES]$ vim epamstudent.sh
+[dmitriirpm@localhost SOURCES]$ chmod +x epamstudent.sh
+/*
+#!/bin/bash
+
+echo -n "Input your text:"
+read some_text
+if [ -z "$some_text" ]; then
+        echo "Error"
+        exit
+fi
+echo -e "Your text:\n$some_text"
+*/
+
+6) Добавляю папку с sh файлом в архив:
+[dmitriirpm@localhost SOURCES]$ mkdir epamstudent-1.0
+[dmitriirpm@localhost SOURCES]$ cd epamstudent-1.0
+[dmitriirpm@localhost epamstudent]$ vim epamstudent.sh
+[dmitriirpm@localhost epamstudent]$ chmod +x epamstudent.sh
+[dmitriirpm@localhost SPECS]$ cd ~/rpm/SOURCES
+[dmitriirpm@localhost SOURCES]$ tar czf epamstudent-1.0.tar.gz epamstudent-1.0/
+
+7) Файл epamstudent.spec
+[dmitriirpm@localhost rpm]$ cd SPECS
+[dmitriirpm@localhost SPECS]$ vim epamstudent.spec
+
+/*
+Name: Homework
+Version: 1
+Release: 0
+Summary: A sample package
+Source0: epamstudent-1.0.tar.gz
+License: GPL
+Group: Shells
+BuildArch: noarch
+BuildRoot: %{_tmppath}/%{name}-buildroot
+
+%description
+Output your text.
+
+%prep
+#!!!Без указания -n epamstudent работать не будет! Потому что ищет не тот файл в папке BUILD!
+# Подробнее https://stackoverflow.com/questions/9283380/bad-exit-status-from-var-tmp-rpm-tmp-ajkra4-prep/9294540
+%setup -q -n epamstudent
+%build
+%install
+install -m 0755 -d $RPM_BUILD_ROOT/etc/epamstudent
+install -m 0755 epamstudent.sh $RPM_BUILD_ROOT/etc/epamstudent/epamstudent.sh
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+%post
+echo . .
+echo .Wring some descripton here to show after package installation!.
+
+%files
+%dir /etc/epamstudent
+/etc/epamstudent/epamstudent.sh
+*/
+
+8) Собираем пакет:
+[dmitriirpm@localhost SPECS]$ cd ~/rpm
+[dmitriirpm@localhost rpm]$ rpmbuild -ba SPECS/epamstudent.spec
+Выполняется(%prep): /bin/sh -e /var/tmp/rpm-tmp.TRG9F3
++ umask 022
++ cd /home/dmitriirpm/rpm/BUILD
++ cd /home/dmitriirpm/rpm/BUILD
++ rm -rf epamstudent
++ /usr/bin/gzip -dc /home/dmitriirpm/rpm/SOURCES/epamstudent-1.0.tar.gz
++ /usr/bin/tar -xf -
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd epamstudent
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ exit 0
+Выполняется(%build): /bin/sh -e /var/tmp/rpm-tmp.0rPWxI
++ umask 022
++ cd /home/dmitriirpm/rpm/BUILD
++ cd epamstudent
++ exit 0
+Выполняется(%install): /bin/sh -e /var/tmp/rpm-tmp.G1K7qn
++ umask 022
++ cd /home/dmitriirpm/rpm/BUILD
++ '[' /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64 '!=' / ']'
++ rm -rf /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64
+++ dirname /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64
++ mkdir -p /home/dmitriirpm/rpm/BUILDROOT
++ mkdir /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64
++ cd epamstudent
++ install -m 0755 -d /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64/etc/epamstudent
++ install -m 0755 epamstudent.sh /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64/etc/epamstudent/epamstudent.sh
++ /usr/lib/rpm/find-debuginfo.sh --strict-build-id -m --run-dwz --dwz-low-mem-die-limit 10000000 --dwz-max-die-limit 110000000 /home/dmitriirpm/rpm/BUILD/epamstudent
+/usr/lib/rpm/sepdebugcrcfix: Updated 0 CRC32s, 0 CRC32s did match.
++ '[' noarch = noarch ']'
++ case "${QA_CHECK_RPATHS:-}" in
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-compress
++ /usr/lib/rpm/redhat/brp-strip-static-archive /usr/bin/strip
++ /usr/lib/rpm/brp-python-bytecompile /usr/bin/python 1
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/lib/rpm/redhat/brp-java-repack-jars
+Processing files: Homework-1-0.noarch
+Provides: Homework = 1-0
+Requires(interp): /bin/sh
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires(post): /bin/sh
+Проверка на неупакованный(е) файл(ы): /usr/lib/rpm/check-files /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64
+Записан: /home/dmitriirpm/rpm/SRPMS/Homework-1-0.src.rpm
+Записан: /home/dmitriirpm/rpm/RPMS/noarch/Homework-1-0.noarch.rpm
+Выполняется(%clean): /bin/sh -e /var/tmp/rpm-tmp.Hb36Ln
++ umask 022
++ cd /home/dmitriirpm/rpm/BUILD
++ cd epamstudent
++ rm -rf /home/dmitriirpm/rpm/BUILDROOT/Homework-1-0.x86_64
++ exit 0
+
+9) Проверяем, что пакет на месте:
+[dmitriirpm@localhost SOURCES]$ cd ~/rpm
+[dmitriirpm@localhost rpm]$ ls -lh
+итого 0
+drwxr-xr-x. 3 dmitriirpm RPM  25 ноя 25 11:14 BUILD
+drwxr-xr-x. 2 dmitriirpm RPM   6 ноя 25 11:14 BUILDROOT
+drwxr-xr-x. 3 dmitriirpm RPM  20 ноя 25 11:14 RPMS
+drwxr-xr-x. 3 dmitriirpm RPM  85 ноя 25 11:01 SOURCES
+drwxr-xr-x. 2 dmitriirpm RPM  30 ноя 25 11:22 SPECS
+drwxr-xr-x. 2 dmitriirpm RPM  34 ноя 25 11:14 SRPMS
+drwxr-xr-x. 2 dmitriirpm RPM 116 ноя 25 10:29 tmp
+[dmitriirpm@localhost rpm]$ cd RPMS
+[dmitriirpm@localhost RPMS]$ ls -lh
+итого 0
+drwxr-xr-x. 2 dmitriirpm RPM 37 ноя 25 11:14 noarch
+[dmitriirpm@localhost RPMS]$ ls -lh noarch
+итого 4,0K
+-rw-r--r--. 1 dmitriirpm RPM 2,4K ноя 25 11:14 Homework-1-0.noarch.rpm
+
+10) Копирую пакет: 
+MacBook-Air-User:DevOps_homework user$ scp root@192.168.56.101:/home/dmitriirpm/rpm/RPMS/noarch/Homework-1-0.noarch.rpm /Users/user/Desktop/
+root@192.168.56.101's password: 
+Homework-1-0.noarch.rpm                                           100% 2368   928.3KB/s   00:00    
