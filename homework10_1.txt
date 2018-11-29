@@ -112,8 +112,32 @@ vm.dirty_ratio = 30
 [root@localhost vm]# sysctl vm.dirty_ratio
 vm.dirty_ratio = 25
 
-?# Насколько я понял, в centos нет такой возможности, как в debian системах - изменить значения файла /etc/sysctl.conf добавив строку:
-vm.dirty_ratio = значение
+# Изменение в /etc/sysctl.conf:
+/*
+# sysctl settings are defined through files in
+# /usr/lib/sysctl.d/, /run/sysctl.d/, and /etc/sysctl.d/.
+#
+# Vendors settings live in /usr/lib/sysctl.d/.
+# To override a whole file, create a new file with the same in
+# /etc/sysctl.d/ and put new settings there. To override
+# only specific settings, add a file with a lexically later
+# name in /etc/sysctl.d/ and put new settings there.
+#
+# For more information, see sysctl.conf(5) and sysctl.d(5).
+vm.dirty_ratio = 25
+*/
+
+# Применение внесенных изменений без перезагрузки системы:
+[root@localhost sysctl.d]# sysctl -p /etc/sysctl.conf
+vm.dirty_ratio = 25
+
+[root@localhost ~]# sysctl vm.dirty_ratio
+vm.dirty_ratio = 25
+
+[root@localhost ~]# cd /etc/sysctl.d
+[root@localhost sysctl.d]# ls -lh
+итого 0
+lrwxrwxrwx. 1 root root 14 ноя 10 12:14 99-sysctl.conf -> ../sysctl.conf
 
 6. Disable selinux using kernel cmdline:
 
@@ -152,3 +176,40 @@ Permissive
 [root@localhost selinux]# getenforce 
 Enforcing
 
+# Исправленный вариант изменения:
+[root@localhost ~]# cat /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet"
+GRUB_DISABLE_RECOVERY="false"
+[root@localhost ~]# vim /etc/default/grub
+[root@localhost ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
+Generating grub configuration file ...
+Found linux image: /boot/vmlinuz-3.10.0-862.14.4.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-862.14.4.el7.x86_64.img
+Found linux image: /boot/vmlinuz-3.10.0-862.el7.x86_64
+Found initrd image: /boot/initramfs-3.10.0-862.el7.x86_64.img
+Found linux image: /boot/vmlinuz-0-rescue-3df6e81b710d4dd1b40b2a19862d544b
+Found initrd image: /boot/initramfs-0-rescue-3df6e81b710d4dd1b40b2a19862d544b.img
+done
+[root@localhost ~]# cat /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet selinux=0"
+GRUB_DISABLE_RECOVERY="false"
+
+[root@localhost ~]# getenforce 
+Enforcing
+[root@localhost ~]# reboot
+Connection to 192.168.56.102 closed by remote host.
+Connection to 192.168.56.102 closed.
+MacBook-Air-User:~ user$ ssh root@CentosVB
+Last login: Thu Nov 29 12:23:12 2018 from 192.168.56.1
+[root@localhost ~]# getenforce 
+Disabled
