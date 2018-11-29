@@ -93,20 +93,73 @@ done
 awk 'END{print NR}' result
 */
 
+/*
+#!/bin/bash
+
+input="cities"
+result=()
+i=0
+
+while read CITY
+do
+        if [[ ! $CITY =~ [a] ]]
+        then
+                result[$i]=$CITY
+                echo "${result[$i]}"
+                ((i++))
+        fi
+done < $input
+SIZE=${#result[@]}
+echo $SIZE
+*/
+
+/*
+vim cities:
+
+Moscow
+Saint-Petersburg
+Novosibirsk
+Yekaterinburg
+Nizhny Novgorod
+Kazan
+Chelyabinsk
+Omsk
+Samara
+Rostov-on-Don
+Ufa
+Krasnoyarsk
+Perm
+Voronezh
+Volgograd
+*/
+
+[root@localhost dmitrii]# ./scrypt2.sh 
+Moscow
+Novosibirsk
+Nizhny Novgorod
+Omsk
+Rostov-on-Don
+Perm
+Voronezh
+7
+
 3. Extra. 
 Write a daemon, which works in a background and checks who is logged in on your server every 15 seconds, the script should have an array with the list of trusted users, and if there any user on the server who is not in this list, script should log out him (kill -HUP can help). Check it by logging as a user who is not in a list and ensures that he logged out. 
 
-1) Creating files daemon.sh, user_list
+1) Creating files daemon.sh, user_list, AllUser_arr
+
 [root@localhost tmp]# ls -lh
-итого 20K
--rwxr-xr-x. 1 root    root     40 ноя  9 05:47 daemon2.sh
--rwxr-xr-x. 1 root    root    129 ноя 19 10:16 daemon.sh
--rw-rw-r--. 1 dmitrii dmitrii   4 ноя  9 05:53 homework
-drwx------. 3 root    root     17 ноя 18 23:14 systemd-private-9d06e547263f4f56847bab2c921aeb57-chronyd.service-kfPhR3
-drwx------. 3 root    root     17 ноя 16 19:40 systemd-private-e1eccc5ef6734e3b8f73c6913de6fb1e-chronyd.service-x2Qv8W
-drwx------. 2 dmitrii dmitrii   6 окт 28 10:58 tmux-1000
--rw-r--r--. 1 root    root     17 ноя 19 10:17 user_list
--rw-------. 1 root    root    243 ноя 10 12:01 yum_save_tx.2018-11-10.12-01.AgWqA_.yumtx
+итого 100K
+-rw-r--r--  1 root    root     13 ноя 29 19:05 AllUser_arr
+-rwxr-xr-x. 1 root    root    396 ноя 29 19:06 daemon.sh
+drwx------. 3 root    root     17 ноя 20 18:34 systemd-private-47d1ec69a5454035a0616571d83ec00c-chronyd.service-SLsttj
+drwx------  3 root    root     17 ноя 29 17:16 systemd-private-9563e7d0f021449fa16afc3b1916f2d2-chronyd.service-RMtZ7G
+drwx------. 3 root    root     17 ноя 19 20:54 systemd-private-df3f6ce28aed4c58b7babbc793b0d2af-chronyd.service-BF6Dhq
+-rw-------. 1 root    root    696 ноя 25 00:45 tmpGiopLO
+-rw-rw-r--  1 dmitrii dmitrii  15 ноя 29 17:42 user_list
+-rw-------. 1 root    root    77K ноя 22 23:21 yum_save_tx.2018-11-22.23-21.iVfiB2.yumtx
+-rw-------. 1 root    root    242 ноя 24 23:49 yum_save_tx.2018-11-24.23-49.bNIuQ1.yumtx
+
 
 /*
 daemon.sh:
@@ -114,17 +167,33 @@ daemon.sh:
 
 #!/bin/bash
 
-array=$(cat /tmp/user_list)
-who | awk '{ printf ("%s",$1 "\n"); }'| grep -v "${array[@]}" | xargs -I {} -t pkill -u $1{}
+who | awk '{ printf ("%s",$1 "\n"); }' > /tmp/AllUser_arr
 
+allUser_arr=$(cat /tmp/AllUser_arr)
+allowed_arr=$(cat /tmp/user_list)
+approved_User=()
+
+for user in $allUser_arr; do
+
+        for allowed_user in $allowed_arr; do
+
+                if [[ ${allowed_user} == ${user} ]]
+                        then approved_User+=($user)
+                fi
+        done
+done
+
+if [[ ! " ${approved_User[@]} " =~ " ${user} " ]]; then
+        pkill -u ${user}
+fi
 */
 
 /*
 user_list:
 ****
-
+john
+alex
 root
-dmitrii
 ...
 smb
 */
