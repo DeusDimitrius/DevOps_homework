@@ -1,0 +1,101 @@
+iptables:
+
+1. with enabled firewalld:
+
+1) Add rule using firewall-cmd that will allow SSH access to your server only from network 192.168.56.0/24 and interface enp0s8 (if your network and/on interface name differs - change it accordingly)
+
+[root@localhost selinux]# firewall-cmd --state
+running
+[root@localhost selinux]# firewall-cmd --get-zones
+block dmz drop external home internal public trusted work
+[root@localhost selinux]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources: 
+  services: ssh dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+
+# Сетевые интерфейсы находятся в public
+# Меняю зону для интерфейса
+# Чтобы сделать постоянную модификацию зоны, мы должны использовать опцию -perantent. Поскольку простое перемещение являются временным и не выдержит перезагрузки firewalld-демона
+
+[root@localhost selinux]# firewall-cmd --permanent --zone=external --add-interface=enp0s8
+The interface is under control of NetworkManager, setting zone to 'external'.
+success
+[root@localhost selinux]# firewall-cmd --get-zones
+block dmz drop external home internal public trusted work
+[root@localhost selinux]# firewall-cmd --get-active-zones
+external
+  interfaces: enp0s8
+public
+  interfaces: enp0s3
+
+# public: эта зона представляет публичную сеть, которой нельзя доверять, однако поддерживает входящие соединения в индивидуальном порядке.
+external: зона внешних сетей. Поддерживает маскировку NAT, благодаря чему внутренняя сеть остается закрытой, но с возможностью получения доступа.
+
+[root@localhost ~]# firewall-cmd --zone=external --add-rich-rule="rule \
+>     family="ipv4" \
+>     source address=192.168.56.0/24 \
+>     service name=ssh \
+>     accept "
+success
+
+# Удаляю ssh для всех остальных сетевых подключений:
+firewall-cmd --permanent --zone=external --remove-service="ssh"
+success
+firewall-cmd --permanent --zone=public --remove-service="ssh"
+success
+
+# Перезагрузка firewall:
+firewall-cmd --reload
+success
+
+2) Shutdown firewalld and add the same rules via iptables.
+
+[root@localhost ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Сб 2018-11-24 15:40:19 MSK; 4 days ago
+     Docs: man:firewalld(1)
+ Main PID: 697 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─697 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+
+ноя 24 15:40:18 localhost.localdomain systemd[1]: Starting firewalld - dynamic firewall daemon...
+ноя 24 15:40:19 localhost.localdomain systemd[1]: Started firewalld - dynamic firewall daemon.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+[root@localhost ~]# systemctl stop firewalld
+
+# Смотрю правила на входящие подключения:
+[root@localhost ~]# iptables -L INPUT -n -v
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+# На исходящие:
+[root@localhost ~]# iptables -L OUTPUT -n -v --line-numbers
+Chain OUTPUT (policy ACCEPT 3 packets, 488 bytes)
+num   pkts bytes target     prot opt in     out     source               destination 
+
+# dport 22 - стандартный SSH порт:
+[root@localhost ~]# iptables -A INPUT -s 192.168.56.0/24 -p tcp --dport 22 -i enp0s8 -j ACCEPT
+
+[root@localhost ~]# iptables -L INPUT -n -v
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    9   636 ACCEPT     tcp  --  enp0s8 *       192.168.56.0/24      0.0.0.0/0            tcp dpt:22
+
+[root@localhost ~]# iptables -A INPUT -p tcp --dport 22 -j DROP
+[root@localhost ~]# iptables -L INPUT -n -v
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+   71  5164 ACCEPT     tcp  --  enp0s8 *       192.168.56.0/24      0.0.0.0/0            tcp dpt:22
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:22
