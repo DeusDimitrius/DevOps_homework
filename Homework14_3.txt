@@ -1,0 +1,125 @@
+3. GIT Task 3:
+
+1) Set up Gitlab CE in docker container (image "gitlab/gitlab-ce:latest", ports to publish – 80 and 22, you can choose any ports to be published on your machine)
+
+MacBook-Air-User:~ user$ docker version
+Client: Docker Engine - Community
+ Version:           18.09.0
+ API version:       1.39
+ Go version:        go1.10.4
+ Git commit:        4d60db4
+ Built:             Wed Nov  7 00:47:43 2018
+ OS/Arch:           darwin/amd64
+ Experimental:      false
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          18.09.0
+  API version:      1.39 (minimum version 1.12)
+  Go version:       go1.10.4
+  Git commit:       4d60db4
+  Built:            Wed Nov  7 00:55:00 2018
+  OS/Arch:          linux/amd64
+  Experimental:     false
+
+
+MacBook-Air-User:~ user$ docker run -it -p 8080:80 -p 2222:22 gitlab/gitlab-ce
+Unable to find image 'gitlab/gitlab-ce:latest' locally
+latest: Pulling from gitlab/gitlab-ce
+7b8b6451c85f: Pull complete 
+ab4d1096d9ba: Pull complete 
+e6797d1788ac: Pull complete 
+e25c5c290bde: Pull complete 
+73864f444536: Pull complete 
+9e5152be0d33: Pull complete 
+a61be2016e44: Pull complete 
+80e7aff2760b: Pull complete 
+6682c512c015: Pull complete 
+0726437d6290: Pull complete 
+Digest: sha256:a1951d65d9e2b2723f85f3f85c8f739891bb745851632853d3903c7457f0a61a
+Status: Downloaded newer image for gitlab/gitlab-ce:latest
+Thank you for using GitLab Docker Image!
+Current version: gitlab-ce=11.6.0-ce.0
+
+
+MacBook-Air-User:~ user$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS                                 PORTS                                                 NAMES
+6e3a058b8447        gitlab/gitlab-ce    "/assets/wrapper"   About a minute ago   Up About a minute (health: starting)   443/tcp, 0.0.0.0:2222->22/tcp, 0.0.0.0:8080->80/tcp   romantic_haibt
+
+
+/*
+
+Create a new repository
+
+git clone http://6e3a058b8447/root/homework_14.git
+cd homework_14
+touch README.md
+git add README.md
+git commit -m "add README"
+git push -u origin master
+
+*/
+
+7) Create all branches for GitFlow in this project (you can create one future and one release branches and don't create hotfix branch):
+
+MacBook-Air-User:~ user$ cd ~/Desktop/
+MacBook-Air-User:Desktop user$ mkdir GitLab
+MacBook-Air-User:Desktop user$ cd GitLab
+MacBook-Air-User:GitLab user$ git clone http://6e3a058b8447/root/homework_14.git
+Cloning into 'homework_14'...
+fatal: unable to access 'http://6e3a058b8447/root/homework_14.git/': Could not resolve host: 6e3a058b8447
+MacBook-Air-User:GitLab user$ git clone http://localhost:8080/root/homework_14.git
+Cloning into 'homework_14'...
+Username for 'http://localhost:8080': root
+Password for 'http://root@localhost:8080': 
+warning: You appear to have cloned an empty repository.
+MacBook-Air-User:GitLab user$ cd homework_14
+MacBook-Air-User:homework_14 user$ touch README.md
+MacBook-Air-User:homework_14 user$ git add README.md
+MacBook-Air-User:homework_14 user$ git commit -m "add README"
+[master (root-commit) d913f07] add README
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 README.md
+MacBook-Air-User:homework_14 user$ git push -u origin master
+Counting objects: 3, done.
+Writing objects: 100% (3/3), 219 bytes | 219.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To http://localhost:8080/root/homework_14.git
+ * [new branch]      master -> master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+
+
+MacBook-Air-User:homework_14 user$ git branch
+* master
+MacBook-Air-User:homework_14 user$ git checkout release
+error: pathspec 'release' did not match any file(s) known to git.
+MacBook-Air-User:homework_14 user$ git checkout -b release
+Switched to a new branch 'release'
+MacBook-Air-User:homework_14 user$ git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+MacBook-Air-User:homework_14 user$ git checkout -b feature
+Switched to a new branch 'feature'
+MacBook-Air-User:homework_14 user$ git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+MacBook-Air-User:homework_14 user$ git checkout -b develop
+Switched to a new branch 'develop'
+MacBook-Air-User:homework_14 user$ git push origin --all
+Total 0 (delta 0), reused 0 (delta 0)
+remote: 
+remote: To create a merge request for develop, visit:
+remote:   http://6e3a058b8447/root/homework_14/merge_requests/new?merge_request%5Bsource_branch%5D=develop
+remote: 
+remote: To create a merge request for feature, visit:
+remote:   http://6e3a058b8447/root/homework_14/merge_requests/new?merge_request%5Bsource_branch%5D=feature
+remote: 
+remote: To create a merge request for release, visit:
+remote:   http://6e3a058b8447/root/homework_14/merge_requests/new?merge_request%5Bsource_branch%5D=release
+remote: 
+To http://localhost:8080/root/homework_14.git
+ * [new branch]      develop -> develop
+ * [new branch]      feature -> feature
+ * [new branch]      release -> release
+
+
