@@ -1,0 +1,43 @@
+1. In this part of homework you need to solve real production task that I had on my project 3 months ago. It is about building docker image that contains a bunch of tools needed for various infrastructure/build activities, so this image should eventually become a base for a container, inside which: 
+ - infrastructure is created and configured (with Terraform, Azure CLI, Databricks CLI, OpenSSL and jq)
+ - java application is build (with Maven)
+ - angular frontend is build (with Angular CLI)
+ - small python package is build (with python3)
+
+1.1. Write dockerfile to build the image that will contain the following tools in separate layers of your image: 
+ - layer 1: `maven`
+ - layer 2: `terraform`
+ - layer 3: `azure-cli, databricks-cli, openssl, jq`
+ - layer 4: `angular-cli, python3`
+
+If for some reason you can't set up requested layout, feel free to do it the way you prefer, but obligatory with all the tools listed. Please explain in a few words why you decided/had to introduce another layout.
+Keep in mind that depending on the base image you use, you will need to install additional tools and dependencies to install listed above tools. Please keep them in the same layer as the target tool that needs them.
+The smaller size of the result image - the better. For example my image is 630MB in size.
+Comments for explaining your dockerfile will be appreciated.
+
+1.2. Build the image with the name `alant94/hw-13` and tag `YourLastName-1.0`. For example in my case the tag will be `antonau-1.0`.
+
+If you decide to improve the image you already built please build it with another tag specifying next minor version: `YourLastName-1.{1,2,3,...,n}`.
+In case there are changes required after my review of your dockerfile, please specify the tag with next major version `YourLastName-{2,3,...,n}.0'. 
+For example in my case the list of tags may look like this:
+`antonau-1.0` - my very first version of docker image
+`antonau-1.1` - idea how to improve the image came to my mind (before sending dockerfile to reviewer)
+`antonau-2.0` - after I've sent dockerfile for a review, reviewer pointed out few issues and asked me to fix them 
+...
+
+
+2. Push the image you built in task 1 to repository in the container registry.
+
+2.1. In order to push your images to container registry (which is Docker Hub private repository I've set up in my dockerhub account) first you need to get access to it. So you need to create dockerhub account (https://hub.docker.com/signup) and send me your Docker id. I will add you to Collaborators and then you will be able to push images to the "alant94/hw-13" repository.
+
+2.2. Log in to a Docker registry using your dockerhub account.
+`docker login` command on your centos
+
+2.3. Finally push the image/images you've build to the registry by running:
+`docker push alant/hw-13:YourLastName-1.{1,2,3,...,n}`
+For example in my case command will be:
+`docker push alant/hw-13:antonau-1.0`
+
+
+3. Go through this tutorial to learn a bit about docker-compose:
+https://docs.docker.com/compose/gettingstarted/
