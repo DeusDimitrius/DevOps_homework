@@ -1,0 +1,26 @@
+1. Заливаю docker image в репозиторий на docker hub:
+
+[root@localhost homework13]# docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: deusdimitrius
+Password: 
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+[root@localhost homework13]# docker push alant94/hw-13:Balashov-1.0
+The push refers to repository [docker.io/alant94/hw-13]
+a822400090b8: Pushed 
+b468a8bd5a18: Pushed 
+cfca700d290e: Pushed 
+5ae993c5b5f2: Layer already exists 
+9800d6dcbf84: Layer already exists 
+214fb48eb3d1: Layer already exists 
+1e5e0fe36a11: Layer already exists 
+ac1faac0988e: Layer already exists 
+dbc783c89851: Layer already exists 
+7bff100f35cb: Layer already exists 
+Balashov-1.0: digest: sha256:c3dbebc62f79c8539387b7db1abea99f7da7f10e5d3306743bd5129e56ec6a5f size: 2420
+
