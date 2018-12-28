@@ -1,0 +1,31 @@
+1. Создание dockerfile:
+
+[root@localhost ~]# cd homework13
+[root@localhost homework13]# ls
+[root@localhost homework13]# touch dockerfile
+[root@localhost homework13]# vim dockerfile
+
+2. Сборка docker image:
+
+[root@localhost homework13]# docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+[root@localhost homework13]# docker build -t alant94/hw-13:Balashov-1.0 .
+
+.....
+
+Successfully built 55f0a69b99f5
+Successfully tagged alant94/hw-13:Balashov-1.0
+[root@localhost homework13]# docker images
+REPOSITORY          TAG                  IMAGE ID            CREATED              SIZE
+alant94/hw-13       Balashov-1.0         55f0a69b99f5        About a minute ago   765MB
+maven               3.6.0-jdk-8-alpine   79abdd64abd1        6 days ago           119MB
+mitya/alpine-cool   1.4                  6b515a7cdd14        2 weeks ago          48MB
+mitya/alpine-cool   1.3                  6dc0297ec005        2 weeks ago          48MB
+mitya/alpine-cool   1.2                  e9a898f808ab        2 weeks ago          48.3MB
+mitya/alpine-cool   1.1                  5bdef32e206e        2 weeks ago          48MB
+mitya/alpine-cool   1.0                  fc4f9a6ebb0e        2 weeks ago          34.5MB
+nginx               latest               568c4670fa80        4 weeks ago          109MB
+httpd               latest               2a51bb06dc8b        5 weeks ago          132MB
+busybox             latest               59788edf1f3e        2 months ago         1.15MB
+alpine              3.8                  196d12cf6ab1        3 months ago         4.41MB
+hello-world         latest               4ab4c602aa5e        3 months ago         1.84kB 
