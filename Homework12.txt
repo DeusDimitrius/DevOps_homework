@@ -1,0 +1,172 @@
+1. Task: Docker container:
+
+1.1 Создайте неактивный контейнер с любым образом (кроме busybox, nginx, httpd).
+
+[root@localhost ~]# mkdir homework12
+[root@localhost ~]# cd homework
+homework12/ homework2/  
+[root@localhost ~]# cd homework12/
+[root@localhost homework12]# docker --version
+Docker version 18.09.0, build 4d60db4
+У вас есть новая почта в /var/spool/mail/root
+[root@localhost homework12]# systemctl status docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: active (running) since Вт 2018-12-11 15:15:46 MSK; 1 weeks 0 days ago
+     Docs: https://docs.docker.com
+ Main PID: 1022 (dockerd)
+    Tasks: 13
+   Memory: 106.1M
+   CGroup: /system.slice/docker.service
+           └─1022 /usr/bin/dockerd -H unix://
+
+дек 11 15:15:45 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:45.195882771+03:00" level=...rpc
+дек 11 15:15:45 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:45.220713278+03:00" level=...y2"
+дек 11 15:15:45 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:45.418875732+03:00" level=...ds"
+дек 11 15:15:45 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:45.420307717+03:00" level=...t."
+дек 11 15:15:46 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:46.630277197+03:00" level=...ss"
+дек 11 15:15:46 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:46.758522675+03:00" level=...e."
+дек 11 15:15:46 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:46.831624363+03:00" level=...9.0
+дек 11 15:15:46 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:46.831776814+03:00" level=...on"
+дек 11 15:15:46 localhost.localdomain dockerd[1022]: time="2018-12-11T15:15:46.894122472+03:00" level=...ck"
+дек 11 15:15:46 localhost.localdomain systemd[1]: Started Docker Application Container Engine.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost homework12]# 
+[root@localhost homework12]# 
+[root@localhost homework12]# docker container create -it --name Postgres postgres:9.4
+Unable to find image 'postgres:9.4' locally
+9.4: Pulling from library/postgres
+a5a6f2f73cd8: Already exists 
+e50fbea8af5a: Pull complete 
+73b4855ad326: Pull complete 
+39616673f22b: Pull complete 
+94e1b79f69ee: Pull complete 
+c91e4af2ff8e: Pull complete 
+16ba314c612f: Pull complete 
+89011a174cee: Pull complete 
+ad7215aeae47: Pull complete 
+ae3adc48bab0: Pull complete 
+5717f70f2b19: Pull complete 
+fd83cc42a6ae: Pull complete 
+073cd75c572f: Pull complete 
+d8f4f33291a0: Pull complete 
+Digest: sha256:0b29af18a22c865a8edea33f41c38b7ead38e7c1ebf0016d69edd14e11c7cc6a
+Status: Downloaded newer image for postgres:9.4
+8d881aaa10a0a4b4d5a6828fcb63c1296cefff904b6405af5c995f1f5816bc52
+[root@localhost homework12]# 
+[root@localhost homework12]# docker ps -a
+CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS                    PORTS               NAMES
+8d881aaa10a0        postgres:9.4            "docker-entrypoint.s…"   54 seconds ago      Created                                       Postgres
+94a3c3beb629        3bd9d83ac3d1            "/bin/sh"                9 days ago          Exited (127) 9 days ago                       wonderful_banzai
+386868e91533        196d12cf6ab1            "/bin/sh -c 'apk upd…"   9 days ago          Exited (127) 9 days ago                       unruffled_hofstadter
+ef637cbe7767        196d12cf6ab1            "/bin/sh -c 'apk upd…"   9 days ago          Exited (127) 9 days ago                       amazing_leakey
+d368f17a9017        mitya/alpine-cool:1.3   "/bin/sh"                9 days ago          Exited (0) 9 days ago                         brave_morse
+73f1ede1658e        mitya/alpine-cool:1.2   "/bin/sh"                9 days ago          Exited (0) 9 days ago                         gifted_einstein
+57ac975d8bb3        mitya/alpine-cool:1.1   "/bin/sh"                9 days ago          Exited (127) 9 days ago                       nervous_sinoussi
+941221d05fb2        mitya/alpine-cool:1.0   "/bin/sh"                9 days ago          Exited (0) 9 days ago                         zealous_lamarr
+72946b0656dd        httpd                   "httpd-foreground"       9 days ago          Exited (0) 7 days ago                         apache1
+7ee0c0ed5684        nginx                   "nginx -g 'daemon of…"   9 days ago          Exited (0) 7 days ago                         nginx1
+61a9c9a22d2e        busybox                 "sh"                     9 days ago          Exited (137) 7 days ago                       test2
+0f3f2c4e0702        busybox                 "--name test1 busybox"   9 days ago          Created                                       recursing_banach
+fdda64a7816d        busybox                 "sh"                     9 days ago          Exited (0) 9 days ago                         brave_bhabha
+e42a8580158e        busybox                 "sh"                     9 days ago          Exited (0) 9 days ago                         recursing_payne
+a77b0ea77079        hello-world             "/hello"                 9 days ago          Exited (0) 9 days ago                         hello
+150d3a008d8a        hello-world             "/hello"                 9 days ago          Exited (0) 9 days ago                         cranky_mendeleev
+
+1.2 Активируйте контейнер.
+
+[root@localhost homework12]# docker start Postgres
+Postgres
+[root@localhost homework12]# docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+8d881aaa10a0        postgres:9.4        "docker-entrypoint.s…"   5 minutes ago       Up 9 seconds        5432/tcp            Postgres
+
+1.3 Покажите часть лога этого контейнера:
+
+[root@localhost homework12]# docker logs Postgres
+
+/*
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.utf8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+fixing permissions on existing directory /var/lib/postgresql/data ... ok
+creating subdirectories ... ok
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting dynamic shared memory implementation ... posix
+creating configuration files ... ok
+creating template1 database in /var/lib/postgresql/data/base/1 ... ok
+initializing pg_authid ... ok
+setting password ... ok
+initializing dependencies ... ok
+creating system views ... ok
+loading system objects' descriptions ... ok
+....
+....
+*/
+
+1.4 Зайдите внутрь контейнера:
+
+[root@localhost homework12]# docker exec -it Postgres /bin/bash
+root@8d881aaa10a0:/# ls 
+bin   dev			  docker-entrypoint.sh	home  lib64  mnt  proc	run   srv  tmp	var
+boot  docker-entrypoint-initdb.d  etc			lib   media  opt  root	sbin  sys  usr
+root@8d881aaa10a0:/# cd etc; ls
+adduser.conf		group-	       logrotate.conf  postgresql-common  sensors.d
+aliases			gshadow        logrotate.d     ppp		  services
+alternatives		gshadow-       machine-id      profile		  sgml
+apt			gss	       magic	       profile.d	  shadow
+bash.bashrc		host.conf      magic.mime      protocols	  shadow-
+bindresvport.blacklist	hostname       mailcap	       python2.7	  shells
+cron.d			hosts	       mailcap.order   python3		  skel
+cron.daily		hosts.allow    mailname        python3.5	  ssl
+cron.hourly		hosts.deny     mime.types      rc0.d		  staff-group-for-usr-local
+cron.monthly		init.d	       mke2fs.conf     rc1.d		  subgid
+crontab			inputrc        motd	       rc2.d		  subuid
+cron.weekly		issue	       mtab	       rc3.d		  sysctl.conf
+debconf.conf		issue.net      mysql	       rc4.d		  sysctl.d
+debian_version		kernel	       network	       rc5.d		  sysstat
+default			ldap	       networks        rc6.d		  systemd
+deluser.conf		ld.so.cache    nsswitch.conf   rcS.d		  terminfo
+dpkg			ld.so.conf     opt	       resolv.conf	  timezone
+email-addresses		ld.so.conf.d   os-release      rmt		  ucf.conf
+environment		libaudit.conf  pam.conf        rpc		  update-motd.d
+exim4			locale.alias   pam.d	       securetty	  X11
+fstab			locale.gen     passwd	       security		  xml
+gai.conf		localtime      passwd-	       selinux
+group			login.defs     postgresql      sensors3.conf
+root@8d881aaa10a0:/etc# exit
+exit
+
+1.5 Удалите контейнер и его образ:
+
+[root@localhost homework12]# docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+8d881aaa10a0        postgres:9.4        "docker-entrypoint.s…"   16 minutes ago      Up 10 minutes       5432/tcp            Postgres
+[root@localhost homework12]# docker stop Postgres
+Postgres
+[root@localhost homework12]# docker rm Postgres
+Postgres
+[root@localhost homework12]# docker rmi postgres:9.4
+Untagged: postgres:9.4
+Untagged: postgres@sha256:0b29af18a22c865a8edea33f41c38b7ead38e7c1ebf0016d69edd14e11c7cc6a
+Deleted: sha256:bfa1ca2fe7759095b564c7de9b16926a4140694e9a6b40dbfed6cdb0219323bc
+Deleted: sha256:a441c1b9e580194fdf8a35ef330521496ffe52b5705a5d5295f9dec6a4159685
+Deleted: sha256:b9432f509d961128441caf8c3d3347b5d9e14e28fe9bba0c148a8cd1155714fa
+Deleted: sha256:111b68bcd868ac539257d2b7a2f38e89658098072988e031ab552204ea904557
+Deleted: sha256:76096603f32c25901de452efc7f0e357bedf79c94c976c721d1dc94706df8eec
+Deleted: sha256:4907d2d4f126d9d0d4e8b502195cd62ed7c9590774387bed999065ee8df26366
+Deleted: sha256:dd089f45fab45e9ecff90d9a714f80b7d19d7b925a41839dd1b53eb62f773513
+Deleted: sha256:e5746bb82cca6a7424c4265d702eff8453ca87ec9c286042520a7d243856a250
+Deleted: sha256:a1b9806d5a1aed3e422015f5f5070186bbfc907d343d0ed14f5957a8ac8ac724
+Deleted: sha256:55fa1184f6dee2901c9020f903f1ede4fb7e64eae24976f5b5a644166a49116f
+Deleted: sha256:07f5148927534f9a4c093ba376e2331ca137b0f7735c9863174807fc0402401b
+Deleted: sha256:857da13889a311a4917f94056940eff449dab8c3ee3a13e330a50996beffadce
+Deleted: sha256:497638e3811885201ab2f641245fab98ccd2e3e664c7196e182e145de6f038b2
+Deleted: sha256:fcd296751e069bf8d407a927b0b914c93e3498f6ea586434b2a3f5439340b027

@@ -1,0 +1,173 @@
+3. Task: Docker Container with Network:
+
+3.1 Создайте два контейнера с MySQL с разными именами хостов в одной сети:
+
+1) Создаем новую сеть:
+
+[root@localhost homework12]# docker network create hw12net
+0ff329617ec2e3e6bea2c98cb98141272a36f51c3a060187277b5d0262d3986f
+
+2) Создаем контейнеры mysql1 и mysql2 в сети hw12net:
+
+[root@localhost homework12]# docker run  --network hw12net -e MYSQL_ROOT_PASSWORD=hw12 --name mysql1 -d mysql
+Unable to find image 'mysql:latest' locally
+latest: Pulling from library/mysql
+a5a6f2f73cd8: Already exists 
+936836019e67: Pull complete 
+283fa4c95fb4: Pull complete 
+1f212fb371f9: Pull complete 
+e2ae0d063e89: Pull complete 
+5ed0ae805b65: Pull complete 
+0283dc49ef4e: Pull complete 
+a7e1170b4fdb: Pull complete 
+88918a9e4742: Pull complete 
+241282fa67c2: Pull complete 
+b0fecf619210: Pull complete 
+bebf9f901dcc: Pull complete 
+Digest: sha256:b7f7479f0a2e7a3f4ce008329572f3497075dc000d8b89bac3134b0fb0288de8
+Status: Downloaded newer image for mysql:latest
+16db24b2d8326d0780ad3a77189363f7250150f1089ecb60d2ed3804c5626703
+[root@localhost homework12]# docker run  --network hw12net -e MYSQL_ROOT_PASSWORD=hw12 --name mysql2 -d mysql
+d43335965b00b9b332aa3cf57656aed53d7c9789112ae8bba6f07fc6be8f6c53
+
+3.2 Зайдите в первый контейнер и подключитесь в нем к его MySQL:
+
+[root@localhost homework12]# docker exec -it mysql1 /bin/bash
+root@16db24b2d832:/# mysql -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.13 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> exit
+Bye
+root@16db24b2d832:/# exit
+exit
+
+3.3 Создайте внутри базу данных с любым именем:
+
+mysql> create database hw12
+    -> ;
+Query OK, 1 row affected (0.13 sec)
+
+mysql> create database hw12;
+ERROR 1007 (HY000): Can't create database 'hw12'; database exists
+
+3.4 Повторите это для второго контейнера:
+
+[root@localhost homework12]# docker exec -it mysql2 /bin/bash
+root@d43335965b00:/# mysql -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.13 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database hw1212;
+Query OK, 1 row affected (0.12 sec)
+
+mysql> exit
+Bye
+root@d43335965b00:/# exit
+exit
+
+3.5 Зайдите снова в первый контейнер и подключитесь к MySQL второго контейнера:
+
+[root@localhost homework12]# docker exec -it mysql1 /bin/bash
+root@16db24b2d832:/# mysql -h mysql2 -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.13 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| hw1212             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.10 sec)
+
+mysql> exit
+Bye
+root@16db24b2d832:/# exit
+exit
+
+3.6 LOGS:
+
+[root@localhost homework12]# docker logs mysql1
+Initializing database
+2018-12-19T13:17:12.052334Z 0 [Warning] [MY-011070] [Server] 'Disabling symbolic links using --skip-symbolic-links (or equivalent) is the default. Consider not using this option as it' is deprecated and will be removed in a future release.
+2018-12-19T13:17:12.052480Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.13) initializing of server in progress as process 27
+2018-12-19T13:17:29.774899Z 5 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2018-12-19T13:17:44.813233Z 5 [Warning] [MY-010315] [Server] 'user' entry 'mysql.infoschema@localhost' ignored in --skip-name-resolve mode.
+2018-12-19T13:17:44.813505Z 5 [Warning] [MY-010315] [Server] 'user' entry 'mysql.session@localhost' ignored in --skip-name-resolve mode.
+....
+
+[root@localhost homework12]# docker logs mysql2
+Initializing database
+2018-12-19T13:17:01.389146Z 0 [Warning] [MY-011070] [Server] 'Disabling symbolic links using --skip-symbolic-links (or equivalent) is the default. Consider not using this option as it' is deprecated and will be removed in a future release.
+2018-12-19T13:17:01.389286Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.13) initializing of server in progress as process 27
+2018-12-19T13:17:17.597953Z 5 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2018-12-19T13:17:30.628556Z 5 [Warning] [MY-010315] [Server] 'user' entry 'mysql.infoschema@localhost' ignored in --skip-name-resolve mode.
+2018-12-19T13:17:30.628626Z 5 [Warning] [MY-010315] [Server] 'user' entry 'mysql.session@localhost' ignored in --skip-name-resolve mode.
+2018-12-19T13:17:30.628648Z 5 [Warning] [MY-010315] [Server] 'user' entry 'mysql.sys@localhost' ignored in --skip-name-resolve mode.
+2018-12-19T13:17:30.628738Z 5 [Warning] [MY-010315] [Server] 'user' entry 'root@localhost' ignored in --skip-name-resolve mode.
+....
+
+docker logs mysql1
+
+3.7 Удалите контейнеры и образы:
+
+[root@localhost homework12]# docker stop mysql1
+mysql1
+[root@localhost homework12]# docker stop mysql2
+mysql2
+[root@localhost homework12]# docker rm mysql2
+mysql2
+[root@localhost homework12]# docker rm mysql1
+mysql1
+[root@localhost homework12]# docker images | grep mysql
+mysql               latest              f991c20cb508        4 weeks ago         486MB
+[root@localhost homework12]# docker rmi f991c20cb508
+Untagged: mysql:latest
+Untagged: mysql@sha256:b7f7479f0a2e7a3f4ce008329572f3497075dc000d8b89bac3134b0fb0288de8
+Deleted: sha256:f991c20cb5087fdd01fa7a2181f0a123a54d697681cf3723370bf50566d2e7cf
+Deleted: sha256:eb76df289a2b66f61e4065753765a81a49b7aed1c8630d832faa37c3a1b4f13d
+Deleted: sha256:287e97d6a09e53a40da558f39a95c7b87f1f5ddc6ee4882e80487bef7944d20f
+Deleted: sha256:c81b4bf6d81d0ed3348a013a9a520b30bf25e3bd47df6d142b6fad7181990950
+Deleted: sha256:b3dbc7e5378369011177f8869c3fb406c6ff0cdd3a105fa8d6ba7a0bb273f413
+Deleted: sha256:526598d6e23ff77c95097d9bd073fe0a2244a53bb78038ff5a7a6f8ccda4535a
+Deleted: sha256:7967f8fc83e2010bad53fd2fb21ab41a08ccfc9831c837fc24535467136187a2
+Deleted: sha256:593b105a77d4ff549d46eb65601b952fc5951ceff0bf03ea797ad877a4e7e16e
+Deleted: sha256:a89b4c6ee379b1a79f8948dc8009c9ed6e2729ed1fa3bad58bf01080bb538f3d
+Deleted: sha256:a783dca9de7de1093eebeab09f60e05f9c6372290d340816b17debd701a4f159
+Deleted: sha256:3579b240241d86e588a22d415ace8a2ed036817a73ab55942f662b32f9e6fb44
+Deleted: sha256:e6cf98c0c3aa81bcab324f8dac0317e2448d92e83c20a2c7bf763fc71f0831c5

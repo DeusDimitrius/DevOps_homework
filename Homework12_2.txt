@@ -1,0 +1,240 @@
+2. Task: Docker Container with Volume:
+
+2.1 Создайте контейнер с Nginx так, чтобы он брал свою базовую страницу http вывода с хостовой ОС. Отредактируйте этот html файл. Контейнер должен быть доступен по 85 порту снаружи и 80 внутри. Проверьте ответы через curl. Покажите часть лога этого контейнера. Удалите контейнер и образ.
+
+1) Создаем volume и делаем inspect:
+
+[root@localhost homework12]# docker volume create nginxHW
+nginxHW
+[root@localhost homework12]# docker volume ls
+DRIVER              VOLUME NAME
+local               6ea6dbb0c024c70c225c3b095693c34d63341631afe7633f84bc263d4c568d7c
+local               mytestvolume
+local               nginxHW
+[root@localhost homework12]# docker volume inspect nginxHW
+[
+    {
+        "CreatedAt": "2018-12-19T14:53:59+03:00",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/nginxHW/_data",
+        "Name": "nginxHW",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+
+2) Создаем контейнер с nginx, доступный по 85 порту снаружи и 80 изнутри используя volume ngimxHW:
+
+[root@localhost homework12]# docker run -d -v nginxHW:/usr/share/nginx/html -p 85:80 --name nginxHW nginx
+9c510efef9fd52f6f80c0e0e55e7f6ebaf338a43e64c9dd5338fea131537d28b
+[root@localhost homework12]# ls /var/lib/docker/volumes/nginxHW/_data
+50x.html  index.html
+
+3) Внесение изменений в index.html:
+
+[root@localhost homework12]# vim /var/lib/docker/volumes/nginxHW/_data/index.html
+
+/*
+Базовый вариант:
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+*/
+
+/*
+
+Измененый index.html:
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Homework 12</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Homework 12</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using docker.</em></p>
+</body>
+</html>
+*/
+
+4) Curl:
+
+[root@localhost homework12]# curl localhost:85/
+<!DOCTYPE html>
+<html>
+<head>
+<title>Homework 12</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Homework 12</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using docker.</em></p>
+</body>
+</html>
+[root@localhost homework12]# docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+9c510efef9fd        nginx               "nginx -g 'daemon of…"   11 minutes ago      Up 11 minutes       0.0.0.0:85->80/tcp   nginxHW
+[root@localhost homework12]# docker exec -it nginxHW /bin/bash
+root@9c510efef9fd:/# cat /usr/share/nginx/html/index.html 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Homework 12</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Homework 12</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using docker.</em></p>
+</body>
+</html>
+root@9c510efef9fd:/# exit
+exit
+
+5) LOGS:
+[root@localhost homework12]# docker logs nginxHW
+172.17.0.1 - - [19/Dec/2018:12:17:26 +0000] "GET / HTTP/1.1" 200 601 "-" "curl/7.29.0" "-"
+
+6) Удалите контейнер и образ:
+[root@localhost homework12]# docker stop nginxHW
+nginxHW
+[root@localhost homework12]# docker rm nginxHW
+nginxHW
+[root@localhost homework12]# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+mitya/alpine-cool   1.4                 6b515a7cdd14        9 days ago          48MB
+mitya/alpine-cool   1.3                 6dc0297ec005        9 days ago          48MB
+mitya/alpine-cool   1.2                 e9a898f808ab        9 days ago          48.3MB
+mitya/alpine-cool   1.1                 5bdef32e206e        9 days ago          48MB
+mitya/alpine-cool   1.0                 fc4f9a6ebb0e        9 days ago          34.5MB
+nginx               latest              568c4670fa80        3 weeks ago         109MB
+httpd               latest              2a51bb06dc8b        4 weeks ago         132MB
+busybox             latest              59788edf1f3e        2 months ago        1.15MB
+alpine              3.8                 196d12cf6ab1        3 months ago        4.41MB
+hello-world         latest              4ab4c602aa5e        3 months ago        1.84kB
+[root@localhost homework12]# docker rmi 568c4670fa80 
+
+2.2 Создайте контейнер с MySQL так, чтобы все содержимое MySQL дублировалось к вам на хостовую ОС. Продемонстрируйте это. Удалите контейнер и образ.
+
+1) Создаем volume для MySQL:
+
+[root@localhost homework12]# docker volume create --name HW_sql
+HW_sql
+
+2) Создаем MySQL контейнер в volume:
+
+[root@localhost homework12]# docker run --name HWsql -v HW_sql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=hw12 -d mysql:5.7.24
+Unable to find image 'mysql:5.7.24' locally
+5.7.24: Pulling from library/mysql
+a5a6f2f73cd8: Already exists 
+936836019e67: Pull complete 
+283fa4c95fb4: Pull complete 
+1f212fb371f9: Pull complete 
+e2ae0d063e89: Pull complete 
+5ed0ae805b65: Pull complete 
+0283dc49ef4e: Pull complete 
+a7905d9fbbea: Pull complete 
+cd2a65837235: Pull complete 
+5f906b8da5fe: Pull complete 
+e81e51815567: Pull complete 
+Digest: sha256:c23e9bfe66eeffc990cf6bce4bb0e9c5c85eb908170f3b3dde3e9a12c5a91689
+Status: Downloaded newer image for mysql:5.7.24
+5d64f729c7ff86d2910675163ad2f56ec2e7c10364bd7037b0f21ae40f10e7ab
+
+3) Проверка:
+
+[root@localhost homework12]# ls /var/lib/docker/volumes/HW_sql/_data
+auto.cnf    client-cert.pem  ibdata1      ibtmp1              private_key.pem  server-key.pem
+ca-key.pem  client-key.pem   ib_logfile0  mysql               public_key.pem   sys
+ca.pem      ib_buffer_pool   ib_logfile1  performance_schema  server-cert.pem
+
+4) Удаление:
+
+[root@localhost homework12]# docker stop HWsql
+HWsql
+[root@localhost homework12]# docker rm HWsql
+HWsql
+[root@localhost homework12]# docker images | grep mysql
+mysql               5.7.24              ae6b78bedf88        4 weeks ago         372MB
+[root@localhost homework12]# docker rmi ae6b78bedf88
+Untagged: mysql:5.7.24
+Untagged: mysql@sha256:c23e9bfe66eeffc990cf6bce4bb0e9c5c85eb908170f3b3dde3e9a12c5a91689
+Deleted: sha256:ae6b78bedf88330a5e5392164f40d28ed8a38120b142905d30b652ebffece10e
+Deleted: sha256:f024299d5797abfbd2ad27e6fe59c9c10e573b0bd4a21edc6a3da1778ab8af8c
+Deleted: sha256:a0b13fe66eceb35d675bfc84f90819999bc5c8e0850e857ab8a491ae53f1228e
+Deleted: sha256:3dc077da5db9cc2a0ea304c5fd97411d0b18de822cb25a8d6c25506efa8db824
+Deleted: sha256:3ed2fc046a67f02b57447b4f77f37d592f976c1b222aaf970fcc739c2bce9410
+Deleted: sha256:7967f8fc83e2010bad53fd2fb21ab41a08ccfc9831c837fc24535467136187a2
+Deleted: sha256:593b105a77d4ff549d46eb65601b952fc5951ceff0bf03ea797ad877a4e7e16e
+Deleted: sha256:a89b4c6ee379b1a79f8948dc8009c9ed6e2729ed1fa3bad58bf01080bb538f3d
+Deleted: sha256:a783dca9de7de1093eebeab09f60e05f9c6372290d340816b17debd701a4f159
+Deleted: sha256:3579b240241d86e588a22d415ace8a2ed036817a73ab55942f662b32f9e6fb44
+Deleted: sha256:e6cf98c0c3aa81bcab324f8dac0317e2448d92e83c20a2c7bf763fc71f0831c5
+
+ 
