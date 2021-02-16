@@ -1,0 +1,187 @@
+1. Git Task 1:
+
+1) Create local repository named lection_14_hw:
+
+[root@localhost ~]# mkdir lection_14_hw
+[root@localhost ~]# cd lection_14_hw/
+[root@localhost lection_14_hw]# git init
+Initialized empty Git repository in /root/lection_14_hw/.git/
+
+2) Create file "homework" in this repo and commit it in master branch:
+
+[root@localhost lection_14_hw]# touch homework
+[root@localhost lection_14_hw]# git branch
+[root@localhost lection_14_hw]# git add homework 
+[root@localhost lection_14_hw]# git commit -m "Add homework"
+[master (root-commit) bdedb1b] Add homework
+ Committer: root <root@localhost.localdomain>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 homework
+[root@localhost lection_14_hw]# git status
+# On branch master
+nothing to commit, working directory clean
+[root@localhost lection_14_hw]# git branch
+* master
+
+3) Create branch "hw_14" and insert anything in the file and commit these changes to this branch:
+
+[root@localhost lection_14_hw]# git checkout -b hw_14
+Switched to a new branch 'hw_14'
+[root@localhost lection_14_hw]# vim homework 
+[root@localhost lection_14_hw]# cat homework 
+123123
+[root@localhost lection_14_hw]# git branch
+* hw_14
+  master
+[root@localhost lection_14_hw]# git status
+# On branch hw_14
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   homework
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+
+[root@localhost lection_14_hw]# git add homework
+[root@localhost lection_14_hw]# git commit -m "Mod homework"
+[hw_14 f8a1176] Mod homework
+ Committer: root <root@localhost.localdomain>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+)
+[root@localhost lection_14_hw]# git status
+# On branch hw_14
+nothing to commit, working directory clean
+
+4) Switch back to master branch and add anything else to the empty file "homework" there too:
+
+[root@localhost lection_14_hw]# git checkout master
+Switched to branch 'master'
+[root@localhost lection_14_hw]# vim homework 
+[root@localhost lection_14_hw]# vim homework 
+[root@localhost lection_14_hw]# cat homework 
+abc
+[root@localhost lection_14_hw]# git status
+# On branch master
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   homework
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+[root@localhost lection_14_hw]# git add homework 
+[root@localhost lection_14_hw]# git commit -m "Mod homework"
+[master aa8c30a] Mod homework
+ Committer: root <root@localhost.localdomain>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+)
+
+5) Merge branch "hw_14" to "master", keep only changes from "hw_14" branch:
+
+[root@localhost lection_14_hw]# git branch
+  hw_14
+* master
+[root@localhost lection_14_hw]# git merge hw_14
+Auto-merging homework
+CONFLICT (content): Merge conflict in homework
+Automatic merge failed; fix conflicts and then commit the result.
+
+[root@localhost lection_14_hw]# cat homework 
+<<<<<<< HEAD
+abc
+=======
+123123
+>>>>>>> hw_14
+
+[root@localhost lection_14_hw]# vim homework 
+[root@localhost lection_14_hw]# cat homework 
+123123
+
+[root@localhost lection_14_hw]# git add homework 
+[root@localhost lection_14_hw]# git commit -m "Merged master fixed conflict"
+[master a490873] Merged master fixed conflict
+....
+
+6) Switch to "hw_14" branch again and create new file "temp_file" and commit it:
+
+[root@localhost lection_14_hw]# git  checkout hw_14
+Switched to branch 'hw_14'
+[root@localhost lection_14_hw]# touch temp_file
+[root@localhost lection_14_hw]# git add temp_file 
+[root@localhost lection_14_hw]# git commit -m "Add temp_file"
+[hw_14 d4df744] Add temp_file
+ Committer: root <root@localhost.localdomain>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 temp_file
+
+7) Revert to the first commit in "hw_14" branch:
+
+[root@localhost lection_14_hw]# git log
+commit ecdf388c0a530a5afd593c7c4fa061ff383e1aef
+Author: root <root@localhost.localdomain>
+Date:   Wed Dec 26 04:01:21 2018 +0300
+
+    Add temp_file
+
+commit 980e7307abca74ce6dd2e8522dfbefeba03be4f8
+Author: root <root@localhost.localdomain>
+Date:   Wed Dec 26 03:57:06 2018 +0300
+
+    Mod homework
+
+commit 0f6518e1b5ea6938f274eb504fc633b3d7cb47a4
+Author: root <root@localhost.localdomain>
+Date:   Wed Dec 26 03:44:46 2018 +0300
+
+    Mod homework
+
+commit 93163b498a168305da6647e935e93bfd62c615ee
+Author: root <root@localhost.localdomain>
+Date:   Wed Dec 26 03:41:44 2018 +0300
+
+    Add homework
+[root@localhost lection_14_hw]# git reset --hard 93163b498a168305da6647e935e93bfd62c615ee
+HEAD is now at 93163b4 Add homework

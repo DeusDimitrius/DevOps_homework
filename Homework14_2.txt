@@ -1,0 +1,58 @@
+2. GIT Task 2:
+
+1) Register in Github (if you are not registered yet) and create empty repository "lection_14_hw":
+2) Set remote from your local repo from task 1 to this new repo:
+
+[root@localhost lection_14_hw]# git checkout master
+Switched to branch 'master'
+[root@localhost lection_14_hw]# git remote -v
+[root@localhost lection_14_hw]# git remote set-url origin https://github.com/DeusDimitrius/lection_14_hw
+fatal: No such remote 'origin'
+[root@localhost lection_14_hw]# git remote add origin https://github.com/DeusDimitrius/lection_14_hw.git
+[root@localhost lection_14_hw]# git remote -v
+origin	https://github.com/DeusDimitrius/lection_14_hw.git (fetch)
+origin	https://github.com/DeusDimitrius/lection_14_hw.git (push)
+
+3) Push all branches to the remote repo:
+
+[root@localhost lection_14_hw]# git push origin --all
+Username for 'https://github.com': DeusDimitrius
+Password for 'https://DeusDimitrius@github.com': 
+Counting objects: 17, done.
+Compressing objects: 100% (7/7), done.
+Writing objects: 100% (17/17), 1.29 KiB | 0 bytes/s, done.
+Total 17 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), done.
+To https://github.com/DeusDimitrius/lection_14_hw.git
+ * [new branch]      hw_14 -> hw_14
+ * [new branch]      master -> master
+
+4) Change everything in file "homework" in branch "hw_14" to one line "Hello Github", commit it and push:
+
+[root@localhost lection_14_hw]# vim homework
+[root@localhost lection_14_hw]# git add homework 
+[root@localhost lection_14_hw]# git commit -m "Mod homework"
+[hw_14 9d6166a] Mod homework
+ Committer: root <root@localhost.localdomain>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+)
+[root@localhost lection_14_hw]# git push origin hw_14
+Username for 'https://github.com': DeusDimitrius
+Password for 'https://DeusDimitrius@github.com': 
+Counting objects: 5, done.
+Writing objects: 100% (3/3), 254 bytes | 0 bytes/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To https://github.com/DeusDimitrius/lection_14_hw.git
+   93163b4..9d6166a  hw_14 -> hw_14
+
+5) Create Pull Request from branch "hw_14" to the master branch and assign me as reviewer to this merge request (@Cuttlerat) 
