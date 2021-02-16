@@ -1,0 +1,195 @@
+2. LVM. Imagine you're running out of space on your root device. As we found out during the lesson you have LVM used by default on your CentOS, means you can easily extend size of your root device. So what are you waiting for? Just do it!
+
+2.1. Create 2GB partition on /dev/sdc of type "Linux LVM"
+
+[root@localhost ~]# gdisk /dev/sdc
+GPT fdisk (gdisk) version 0.8.6
+
+Partition table scan:
+  MBR: protective
+  BSD: not present
+  APM: not present
+  GPT: present
+
+Found valid GPT with protective MBR; using GPT.
+
+Command (? for help): n
+Partition number (3-128, default 3): 3
+First sector (34-10485726, default = 5244928) or {+-}size{KMGTP}: 
+Last sector (5244928-10485726, default = 10485726) or {+-}size{KMGTP}: +2G
+Current type is 'Linux filesystem'
+Hex code or GUID (L to show codes, Enter = 8300): 8e00
+Changed type of partition to 'Linux LVM'
+
+Command (? for help): w
+
+Final checks complete. About to write GPT data. THIS WILL OVERWRITE EXISTING
+PARTITIONS!!
+
+Do you want to proceed? (Y/N): Y
+OK; writing new GUID partition table (GPT) to /dev/sdc.
+Warning: The kernel is still using the old partition table.
+The new table will be used at the next reboot.
+The operation has completed successfully.
+
+# Чтобы не делать reboot, чтобы centos перечитал таблицу разделов делаю partprobe:
+[root@localhost ~]# partprobe
+
+[root@localhost ~]# ll /dev/sd*
+brw-rw----. 1 root disk 8,  0 ноя 29 01:36 /dev/sda
+brw-rw----. 1 root disk 8,  1 ноя 29 01:36 /dev/sda1
+brw-rw----. 1 root disk 8,  2 ноя 29 01:36 /dev/sda2
+brw-rw----. 1 root disk 8, 16 ноя 29 01:36 /dev/sdb
+brw-rw----. 1 root disk 8, 17 ноя 29 01:36 /dev/sdb1
+brw-rw----. 1 root disk 8, 18 ноя 29 01:36 /dev/sdb2
+brw-rw----. 1 root disk 8, 32 ноя 29 01:36 /dev/sdc
+brw-rw----. 1 root disk 8, 33 ноя 29 01:36 /dev/sdc1
+brw-rw----. 1 root disk 8, 34 ноя 29 01:36 /dev/sdc2
+brw-rw----. 1 root disk 8, 35 ноя 29 01:36 /dev/sdc3
+
+2.2. Initialize the partition as a physical volume (PV):
+# После создания логического тома и перед добавлением в группу томов диски нужно инициализировать:
+[root@localhost ~]# pvcreate /dev/sdc3
+  Physical volume "/dev/sdc3" successfully created.
+
+2.3. Extend the volume group (VG) of your root device using your newly created PV
+# Для добавления предварительно инициализированного физического тома в существующую группу томов.
+# Создаю группу томов centos и добавляю /dev/sdc3. Можно добавлять несколько одновременно vgcreate группа /dev/sda /dev/sdb /dev/sdc ... .
+[root@localhost ~]# vgextend centos /dev/sdc3
+  Volume group "centos" successfully extended
+
+# Проверяю группы:
+[root@localhost ~]# vgdisplay
+  --- Volume group ---
+  VG Name               centos
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  4
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               2
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               8,99 GiB
+  PE Size               4,00 MiB
+  Total PE              2302
+  Alloc PE / Size       1791 / <7,00 GiB
+  Free  PE / Size       511 / <2,00 GiB
+  VG UUID               KsCJwJ-OyHU-zIj7-2Vs9-59fQ-dWgU-XHadlr
+   
+  --- Volume group ---
+  VG Name               lec9
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <2,00 GiB
+  PE Size               4,00 MiB
+  Total PE              511
+  Alloc PE / Size       125 / 500,00 MiB
+  Free  PE / Size       386 / <1,51 GiB
+  VG UUID               SCfd7I-7izh-6mfN-G5wn-mrWB-VUNk-tomobA
+
+2.4. Extend your root logical volume (LV) by 1GB, leaving other 1GB unassigned:
+
+# lvextend - увеличение размера LV. Ключ -l на сколько.
+
+[root@localhost ~]# lvextend -l +1G centos/root /dev/sdc3
+  Size of logical volume centos/root changed from <6,20 GiB (1586 extents) to <7,20 GiB (1842 extents).
+  Logical volume centos/root successfully resized.
+
+2.5. Check current disk space usage of your root device:
+[root@localhost ~]# df -h
+Файловая система        Размер Использовано  Дост Использовано% Cмонтировано в
+/dev/mapper/centos-root   6,2G         1,8G  4,4G           30% /
+devtmpfs                  485M            0  485M            0% /dev
+tmpfs                     496M            0  496M            0% /dev/shm
+tmpfs                     496M         524K  496M            1% /run
+tmpfs                     496M            0  496M            0% /sys/fs/cgroup
+/dev/sdc1                 2,0G          33M  2,0G            2% /backup
+/dev/sdb1                 976M         2,6M  907M            1% /archive
+/dev/sda1                1014M         159M  856M           16% /boot
+tmpfs                     100M            0  100M            0% /run/user/0
+[root@localhost ~]# df -h /dev/mapper/centos-root
+Файловая система        Размер Использовано  Дост Использовано% Cмонтировано в
+/dev/mapper/centos-root   6,2G         1,8G  4,4G           30% /
+
+2.6. Extend your root device filesystem to be able to use additional free space of root LV
+# Изменение размера для файловой системы:
+После того, как на предыдущем шаге мы расширили раздел, система по-прежнему будет видеть старый по объему диск. Чтобы это исправить, необходимо выполнить команду по изменению размера файловой системы. В зависимости от последней, команды различаются.
+# Для XFS - xfs_growfs /dev/sd?(раздел)
+# Для ext2/ext3/ext4 - resize2fs /dev/vg_centos/lv_root
+
+# Смотрю файловую систему:
+[root@localhost ~]# df -T
+Файловая система        Тип      1K-блоков Использовано Доступно Использовано% Cмонтировано в
+/dev/mapper/centos-root xfs        6486016      1884644  4601372           30% /
+devtmpfs                devtmpfs    495904            0   495904            0% /dev
+tmpfs                   tmpfs       507736            0   507736            0% /dev/shm
+tmpfs                   tmpfs       507736          524   507212            1% /run
+tmpfs                   tmpfs       507736            0   507736            0% /sys/fs/cgroup
+/dev/sdc1               xfs        2086912        32944  2053968            2% /backup
+/dev/sdb1               ext4        999320         2564   927944            1% /archive
+/dev/sda1               xfs        1038336       161956   876380           16% /boot
+tmpfs                   tmpfs       101548            0   101548            0% /run/user/0
+
+# Применяю изменения:
+[root@localhost ~]# xfs_growfs /dev/mapper/centos-root
+meta-data=/dev/mapper/centos-root isize=512    agcount=4, agsize=406016 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=1624064, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal               bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 1624064 to 1886208
+
+# Проверка:
+[root@localhost ~]# df -T
+Файловая система        Тип      1K-блоков Использовано Доступно Использовано% Cмонтировано в
+/dev/mapper/centos-root xfs        7534592      1884676  5649916           26% /
+devtmpfs                devtmpfs    495904            0   495904            0% /dev
+tmpfs                   tmpfs       507736            0   507736            0% /dev/shm
+tmpfs                   tmpfs       507736          524   507212            1% /run
+tmpfs                   tmpfs       507736            0   507736            0% /sys/fs/cgroup
+/dev/sdc1               xfs        2086912        32944  2053968            2% /backup
+/dev/sdb1               ext4        999320         2564   927944            1% /archive
+/dev/sda1               xfs        1038336       161956   876380           16% /boot
+tmpfs                   tmpfs       101548            0   101548            0% /run/user/0
+
+2.7. Verify that after reboot your root device is still 1GB bigger than at 2.5.
+
+[root@localhost ~]# reboot
+Connection to 192.168.56.102 closed by remote host.
+Connection to 192.168.56.102 closed.
+MacBook-Air-User:~ user$ ssh root@CentosVB
+Last login: Thu Nov 29 01:21:22 2018 from 192.168.56.1
+[root@localhost ~]# df -T
+Файловая система        Тип      1K-блоков Использовано Доступно Использовано% Cмонтировано в
+/dev/mapper/centos-root xfs        7534592      1886608  5647984           26% /
+devtmpfs                devtmpfs    495904            0   495904            0% /dev
+tmpfs                   tmpfs       507736            0   507736            0% /dev/shm
+tmpfs                   tmpfs       507736          528   507208            1% /run
+tmpfs                   tmpfs       507736            0   507736            0% /sys/fs/cgroup
+/dev/sdc1               xfs        2086912        32944  2053968            2% /backup
+/dev/sdb1               ext4        999320         2564   927944            1% /archive
+/dev/sda1               xfs        1038336       161956   876380           16% /boot
+tmpfs                   tmpfs       101548            0   101548            0% /run/user/0
+
+[root@localhost ~]# df -h /dev/mapper/centos-root
+Файловая система        Размер Использовано  Дост Использовано% Cмонтировано в
+/dev/mapper/centos-root   7,2G         1,8G  5,4G           26% /
