@@ -1,0 +1,223 @@
+1.1. SSH to host 35.228.120.217 using username and password, provided to you in private chat. Log out from remotehost.
+
+[dmitrii@localhost ~]$ ssh baladm@35.228.120.217
+The authenticity of host '35.228.120.217 (35.228.120.217)' can't be established.
+ECDSA key fingerprint is SHA256:dgVulx3MOrxjhF69TIw8G7TSeyV36IZMZhPpMA+o4mI.
+ECDSA key fingerprint is MD5:31:9c:84:18:91:e6:28:6f:ca:86:c0:47:b7:45:a1:ff.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '35.228.120.217' (ECDSA) to the list of known hosts.
+baladm@35.228.120.217's password:
+Last login: Tue Nov  6 19:08:56 2018 from 46.229.218.249
+[baladm@new-students-ssh ~]$ logout
+Connection to 35.228.120.217 closed.
+
+1.2. Generate new ssh key-pair on your localhost with name "hw-5" (keys should be created in ~/.ssh folder).
+
+1) Создаем SSH ключ:
+
+[dmitrii@localhost .ssh]$ ssh-keygen -f ~/.ssh/hw-5
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/dmitrii/.ssh/hw-5.
+Your public key has been saved in /home/dmitrii/.ssh/hw-5.pub.
+The key fingerprint is:
+SHA256:K5o8q6ftjSMA3r7dI3GIrHFuwpLo+IjEvuF92tZ9oXQ dmitrii@localhost.localdomain
+The key's randomart image is:
++---[RSA 2048]----+
+|                 |
+|                 |
+|                 |
+|.                |
+|o o . . S        |
+|oo = o . o E     |
+|o**   = + o .    |
+|X=+**O.+ o .     |
+|**BX&*o.. .      |
++----[SHA256]-----+
+
+
+[dmitrii@localhost .ssh]$ ls -lh
+итого 32K
+-rw-rw-r--. 1 dmitrii dmitrii   45 ноя 16 20:43 authorized_keys
+-rw-------. 1 dmitrii dmitrii   84 ноя 17 11:54 config
+-rw-------. 1 dmitrii dmitrii 1,7K ноя 17 12:31 hw-5
+-rw-r--r--. 1 dmitrii dmitrii  411 ноя 17 12:31 hw-5.pub
+-rw-------. 1 dmitrii dmitrii 1,7K ноя 16 20:12 id_rsa
+-rw-r--r--. 1 dmitrii dmitrii  411 ноя 16 20:12 id_rsa.pub
+-rw-------. 1 dmitrii dmitrii  351 ноя 17 12:32 known_hosts
+-rw-r--r--. 1 dmitrii dmitrii  351 ноя 16 19:46 known_hosts.old
+
+2) Загрузка ключа на сервер:
+
+[dmitrii@localhost .ssh]$ ssh-copy-id -i ~/.ssh/hw-5.pub 35.228.120.217
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/dmitrii/.ssh/hw-5.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+baladm@35.228.120.217's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh '35.228.120.217'"
+and check to make sure that only the key(s) you wanted were added.
+
+3) Login:
+
+[dmitrii@localhost .ssh]$ ssh baladm@35.228.120.217
+Last login: Sun Nov 18 17:32:09 2018 from 93.92.200.170
+[baladm@new-students-ssh ~]$ 
+
+5) Редактируем  файл config в директории ~/.ssh:
+
+/*
+Измемнение права на файл config при его создании для возможности входа на сервер
+*/
+[dmitrii@localhost .ssh]$ chmod 600 config
+[dmitrii@localhost .ssh]$ ssh baladm@hw5
+
+[dmitrii@localhost .ssh]$ ssh baladm@hw5
+Last login: Fri Nov 16 20:17:14 2018 from 93.92.200.170
+[baladm@new-students-ssh ~]$
+
+/*
+Обновленный файл
+config:
+
+Host 35.228.120.217
+        Hostname 35.228.120.217
+        User baladm
+        IdentityFile ~/.ssh/hw-5
+
+*/
+
+1.6. Using command line utility (curl or telnet) verify that there are some webserver running on port 8080 of IP 10.166.0.2. Notice that 10.166.0.2 is a private network IP so you can access it only from the same network (when you're on remotehost, that runs in the same private network). Log out from remotehost
+
+1)
+
+[baladm@new-students-ssh ~]$ telnet 10.166.0.2 8080 
+Trying 10.166.0.2...
+Connected to 10.166.0.2.
+Escape character is '^]'.
+
+[baladm@new-students-ssh ~]$ ifconfig | grep broadcast
+        inet 10.166.0.3  netmask 255.255.255.255  broadcast 10.166.0.3
+
+
+[baladm@new-students-ssh ~]$ ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1460
+        inet 10.166.0.3  netmask 255.255.255.255  broadcast 10.166.0.3
+        inet6 fe80::4001:aff:fea6:3  prefixlen 64  scopeid 0x20<link>
+        ether 42:01:0a:a6:00:03  txqueuelen 1000  (Ethernet)
+        RX packets 687971  bytes 286472366 (273.2 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 687994  bytes 128164528 (122.2 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 338  bytes 41291 (40.3 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 338  bytes 41291 (40.3 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+2) Перебрасываем порт:
+/*
+ssh -L free_local_port:<web-host(remote machine)>:host_port -f -N user@<ssh-host>
+-N отключает требование выполнять какую-либо команду на удаленной машине
+-f переход в фоновый режим
+*/
+
+[dmitrii@localhost ~]$ ssh -L 8081:10.166.0.2:8080 -f -N baladm@hw5
+
+Проверяем:
+
+[dmitrii@localhost ~]$ netstat -lnpt | grep 8081
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 127.0.0.1:8081          0.0.0.0:*               LISTEN      5630/ssh            
+tcp6       0      0 ::1:8081                :::*                    LISTEN      5630/ssh 
+
+Проверяем telnet:
+[dmitrii@localhost ~]$ telnet 127.0.0.1 8081
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+
+2.1. Imagine your localhost has been relocated to Havana. Change the time zone on the localhost to Havana and verify the time zone has been changed properly. (may be multiple commands)
+
+1)
+
+[root@localhost dmitrii]# timedatectl
+      Local time: Сб 2018-11-17 02:14:31 MSK
+  Universal time: Пт 2018-11-16 23:14:31 UTC
+        RTC time: Пт 2018-11-16 23:14:28
+       Time zone: Europe/Moscow (MSK, +0300)
+     NTP enabled: yes
+NTP synchronized: yes
+ RTC in local TZ: no
+      DST active: n/a
+
+[root@localhost dmitrii]# timedatectl list-timezones
+...
+America/Havana
+...
+
+[root@localhost log]# timedatectl set-timezone America/Havana
+[root@localhost dmitrii]# timedatectl 
+      Local time: Пт 2018-11-16 18:20:01 CST
+  Universal time: Пт 2018-11-16 23:20:01 UTC
+        RTC time: Пт 2018-11-16 23:19:58
+       Time zone: America/Havana (CST, -0500)
+     NTP enabled: yes
+NTP synchronized: yes
+ RTC in local TZ: no
+      DST active: no
+ Last DST change: DST ended at
+                  Вс 2018-11-04 00:59:59 CDT
+                  Вс 2018-11-04 00:00:00 CST
+ Next DST change: DST begins (the clock jumps one hour forward) at
+                  Сб 2019-03-09 23:59:59 CST
+                  Вс 2019-03-10 01:00:00 CDT
+
+2.2. Find all systemd journal messages on localhost, that were recorded in the last 50 minutes and originate from a system service started with user id 81. (single command)
+
+[root@localhost dmitrii]# journalctl _UID=81 --since '-50min'
+-- Logs begin at Чт 2018-10-25 18:03:38 MSK, end at Сб 2018-11-17 02:28:26 MSK. --
+ноя 17 02:14:31 localhost.localdomain dbus[622]: [system] Activating via systemd: service name='org.
+ноя 17 02:14:31 localhost.localdomain dbus[622]: [system] Successfully activated service 'org.freede
+ноя 17 02:17:56 localhost.localdomain dbus[622]: [system] Connection has not authenticated soon enou
+ноя 17 02:19:55 localhost.localdomain dbus[622]: [system] Activating via systemd: service name='org.
+ноя 17 02:19:55 localhost.localdomain dbus[622]: [system] Successfully activated service 'org.freede
+ноя 17 02:21:36 localhost.localdomain dbus[622]: [system] Connection has not authenticated soon enou
+ноя 17 02:22:18 localhost.localdomain dbus[622]: [system] Activating via systemd: service name='org.
+ноя 17 02:22:18 localhost.localdomain dbus[622]: [system] Successfully activated service 'org.freede
+
+2.3. Configure rsyslogd by adding a rule to the newly created configuration file /etc/rsyslog.d/auth-errors.conf to log all security and authentication messages with the priority alert and higher to the /var/log/auth-errors file. Test the newly added log directive with the logger command. (multiple commands)
+
+1) Создаём директорию для журналов:
+[root@localhost log]# touch auth-errors
+
+2) Добавляем конфигурационный файл auth-errors.conf:
+[root@localhost dmitrii]# cd /etc/rsyslog.d
+[root@localhost rsyslog.d]# ls -lh
+итого 8,0K
+-rw-r--r--. 1 root root  0 ноя 17 02:50 auth-errors.conf
+-rw-r--r--. 1 root root 31 окт 30 03:36 debug.conf
+-rw-r--r--. 1 root root 49 сен 26 22:11 listen.conf
+
+/*
+auth-errors.conf:
+
+auth.alert /var/log/auth-errors
+*/
+
+3) Перезагрузка и просмотр результата:
+[root@localhost rsyslog.d]# systemctl restart rsyslog
+[root@localhost rsyslog.d]# systemctl restart rsyslog
+
+[root@localhost log]# logger -p auth.alert "Test message"
+[root@localhost log]# cat /var/log/auth-errors
+
+Nov 17 08:30:00 localhost dmitrii: Test message
