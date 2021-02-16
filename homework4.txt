@@ -1,0 +1,404 @@
+1. Processes
+
+1) Run a "sleep" command three times at different intervals:
+[dmitrii@localhost ~]$ sleep 100000; sleep 200000; sleep 300000
+
+2) Send a SIGSTOP signal to all of them in three different ways & Check their statuses with a job command:
+var1:
+[dmitrii@localhost ~]$ sleep 100000; sleep 200000; sleep 300000
+^Z
+[1]+  Stopped                 sleep 100000
+^Z
+[2]+  Stopped                 sleep 200000
+^Z
+[3]+  Stopped                 sleep 300000
+
+var2:
+[dmitrii@localhost ~]$ kill -cont %1 %2 %3
+[dmitrii@localhost ~]$ jobs
+[1]   Running                 sleep 100000 &
+[2]-  Running                 sleep 200000 &
+[3]+  Running                 sleep 300000 &
+[dmitrii@localhost ~]$ kill -stop %1 %2 %3
+[dmitrii@localhost ~]$ jobs
+[1]   Stopped                 sleep 100000
+[2]-  Stopped                 sleep 200000
+[3]+  Stopped                 sleep 300000
+
+var3:
+[dmitrii@localhost ~]$ ps
+  PID TTY          TIME CMD
+ 7567 pts/0    00:00:00 bash
+ 7718 pts/0    00:00:00 sleep
+ 7719 pts/0    00:00:00 sleep
+ 7720 pts/0    00:00:00 sleep
+ 7747 pts/0    00:00:00 ps
+
+[dmitrii@localhost ~]$ kill -19 7719 7718 7720
+[dmitrii@localhost ~]$ jobs
+[1]   Stopped                 sleep 100000
+[2]-  Stopped                 sleep 200000
+[3]+  Stopped                 sleep 300000
+
+3) Terminate one of them. (Any)
+[dmitrii@localhost ~]$ kill -15 %1
+
+[1]   Stopped                 sleep 100000
+[dmitrii@localhost ~]$ jobs
+[1]   Завершено      sleep 100000
+[2]-  Stopped                 sleep 200000
+[3]+  Stopped                 sleep 300000
+
+4) To other send a SIGCONT in two different ways.
+[dmitrii@localhost ~]$ kill -18 %2 %3
+[dmitrii@localhost ~]$ jobs
+[2]-  Running 		      sleep 200000 &
+[3]+  Running                 sleep 300000 &
+
+[dmitrii@localhost ~]$ fg %3
+sleep 300000
+
+5) Kill one by PID and the second one by job ID
+var1:
+[dmitrii@localhost ~]$ kill -15 %1 %2
+
+[1]-  Stopped                 sleep 200000
+
+[2]+  Stopped                 sleep 300000
+
+var2:
+[dmitrii@localhost ~]$ kill -9 7804 7805
+[dmitrii@localhost ~]$ jobs
+[3]-  Убито              sleep 200000
+[4]+  Убито              sleep 300000
+
+1.2 Learn lsof command:
+1) Run a "sleep" command, redirect stdout and stderr into two different files.
+[dmitrii@localhost ~]$ touch output.txt; touch err.txt; sleep 400000 >> output.txt 2>>err.txt
+
+2) Относительно lsof справка man сообщает, что lsof есть сокращение от LiSt of Open Files, и что утилита эта служит для вывода информации о том, какие файлы используются теми или иными процессами.
+
+[root@localhost dmitrii]# yum install lsof
+[dmitrii@localhost ~]$ sleep 400000 >> output.txt 2>>err.txt
+^Z
+[1]+  Stopped                 sleep 400000 >> output.txt 2>> err.txt
+[dmitrii@localhost ~]$ ps
+  PID TTY          TIME CMD
+ 7567 pts/0    00:00:00 bash
+11744 pts/0    00:00:00 sleep
+11745 pts/0    00:00:00 ps
+[dmitrii@localhost ~]$ lsof -p 11744
+COMMAND   PID    USER   FD   TYPE DEVICE  SIZE/OFF     NODE NAME
+sleep   11744 dmitrii  cwd    DIR  253,0      4096  4200722 /home/dmitrii
+sleep   11744 dmitrii  rtd    DIR  253,0       238       64 /
+sleep   11744 dmitrii  txt    REG  253,0     33120 12603540 /usr/bin/sleep
+sleep   11744 dmitrii  mem    REG  253,0 106070960 12811050 /usr/lib/locale/locale-archive
+sleep   11744 dmitrii  mem    REG  253,0   2173512    19218 /usr/lib64/libc-2.17.so
+sleep   11744 dmitrii  mem    REG  253,0    164240    19211 /usr/lib64/ld-2.17.so
+sleep   11744 dmitrii    0u   CHR  136,0       0t0        3 /dev/pts/0
+sleep   11744 dmitrii    1w   REG  253,0         0  4831429 /home/dmitrii/output.txt
+sleep   11744 dmitrii    2w   REG  253,0         0  4831430 /home/dmitrii/err.txt 
+
+3)List all ESTABLISHED TCP connections with lsof (only them, without any other commands in a pipe)
+
+[root@localhost ~]# lsof -itcp -stcp:ESTABLISHED
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+sshd    1252 root    3u  IPv4  19018      0t0  TCP localhost.localdomain:ssh->192.168.56.1:62784 (ESTABLISHED)
+
+2. Systemd:
+
+1) Write two daemons one should be a simple daemon and do "sleep 10" after a start and then do "echo 1 > /tmp/homework", the second one should be oneshot and do "echo 2 > /tmp/homework" without any sleep
+
+[dmitrii@localhost ~]$ cd /tmp
+[dmitrii@localhost tmp]$ ls -l
+итого 0
+drwx------. 3 root    root    17 окт 30 09:01 systemd-private-05e02df8dc924dea8e27d4eed9b1cf38-chronyd.service-Wvt7zi
+drwx------. 2 dmitrii dmitrii 21 окт 28 10:58 tmux-1000
+[dmitrii@localhost tmp]$ touch homework
+[dmitrii@localhost tmp]$ ls -l
+итого 0
+-rw-rw-r--. 1 dmitrii dmitrii  0 ноя  9 02:40 homework
+drwx------. 3 root    root    17 окт 30 09:01 systemd-private-05e02df8dc924dea8e27d4eed9b1cf38-chronyd.service-Wvt7zi
+drwx------. 2 dmitrii dmitrii 21 окт 28 10:58 tmux-1000
+
+[dmitrii@localhost ~]$ vim daemon1.sh
+[dmitrii@localhost ~]$ chmod u+x daemon1.sh 
+[dmitrii@localhost ~]$ ./daemon1.sh 
+[dmitrii@localhost ~]$ cd /tmp
+[dmitrii@localhost tmp]$ cat homework
+1
+
+/*
+daemon1.sh
+
+#! /bin/bash
+
+sleep 10
+echo "1" > /tmp/homework
+*/
+
+[dmitrii@localhost ~]$ vim daemon2.sh
+[dmitrii@localhost ~]$ chmod u+x daemon2.sh
+[dmitrii@localhost ~]$ ./daemon2.sh 
+[dmitrii@localhost ~]$ cat /tmp/homework
+2
+
+2) Make the second depended on the first one (should start only after the first)
+
+[root@localhost ~]# cd /home/dmitrii
+[root@localhost dmitrii]# vim daemon1.sh
+/*
+#! /bin/bash
+
+sleep 10
+echo "1" > /tmp/homework
+*/
+[root@localhost dmitrii]# vim daemon2.sh 
+
+/*
+#! /bin/bash
+
+echo "2" > /tmp/homework
+*/
+
+[root@localhost ~]# cd /etc/systemd/system
+[root@localhost system]# vim sleep.service
+
+/*
+[Unit]
+Description=sleep daemon
+
+[Service]
+ExecStart=/home/dmitrii/daemon1.sh
+*/
+
+[root@localhost system]# vim oneshot.service 
+
+/*
+[Unit]
+Description=oneshot service
+After=sleep.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/dmitrii/daemon2.sh
+*/
+
+[root@localhost system]# vim oneshot.timer
+
+/*
+[Unit]
+Description=oneshot timer
+
+[Timer]
+OnCalendar=2019-01-01 00:00:00
+*/
+
+# Start all:
+
+[root@localhost dmitrii]# systemctl start sleep.service
+[root@localhost dmitrii]# systemctl start oneshot.service
+[root@localhost dmitrii]# systemctl start oneshot.timer
+[root@localhost dmitrii]# systemctl status sleep.service 
+● sleep.service - sleep daemon
+   Loaded: loaded (/etc/systemd/system/sleep.service; static; vendor preset: disabled)
+   Active: inactive (dead)
+
+ноя 29 20:35:39 localhost.localdomain systemd[1]: Unit sleep.service entered failed state.
+ноя 29 20:35:39 localhost.localdomain systemd[1]: sleep.service failed.
+ноя 29 20:40:29 localhost.localdomain systemd[1]: Started sleep daemon.
+ноя 29 20:40:29 localhost.localdomain systemd[1]: Starting sleep daemon...
+ноя 29 20:40:39 localhost.localdomain daemon1.sh[2154]: /home/dmitrii/daemon1.sh: line 5: ./...ry
+ноя 29 20:40:39 localhost.localdomain systemd[1]: sleep.service: main process exited, code=e.../a
+ноя 29 20:40:39 localhost.localdomain systemd[1]: Unit sleep.service entered failed state.
+ноя 29 20:40:39 localhost.localdomain systemd[1]: sleep.service failed.
+ноя 29 20:45:39 localhost.localdomain systemd[1]: Started sleep daemon.
+ноя 29 20:45:39 localhost.localdomain systemd[1]: Starting sleep daemon...
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@localhost dmitrii]# systemctl status oneshot.service
+● oneshot.service - oneshot service
+   Loaded: loaded (/etc/systemd/system/oneshot.service; static; vendor preset: disabled)
+   Active: inactive (dead)
+
+ноя 29 20:35:44 localhost.localdomain systemd[1]: Starting oneshot service...
+ноя 29 20:35:44 localhost.localdomain systemd[1]: Started oneshot service.
+ноя 29 20:40:38 localhost.localdomain systemd[1]: Starting oneshot service...
+ноя 29 20:40:38 localhost.localdomain systemd[1]: Started oneshot service.
+ноя 29 20:45:53 localhost.localdomain systemd[1]: Starting oneshot service...
+ноя 29 20:45:53 localhost.localdomain systemd[1]: Started oneshot service.
+[root@localhost dmitrii]# systemctl status oneshot.timer
+● oneshot.timer - oneshot timer
+   Loaded: loaded (/etc/systemd/system/oneshot.timer; static; vendor preset: disabled)
+   Active: active (waiting) since Чт 2018-11-29 20:46:00 MSK; 1min 18s ago
+
+ноя 29 20:46:00 localhost.localdomain systemd[1]: Started oneshot timer.
+ноя 29 20:46:00 localhost.localdomain systemd[1]: Starting oneshot timer.
+
+# Stop all:
+[root@localhost dmitrii]# systemctl stop sleep.service 
+[root@localhost dmitrii]# systemctl stop oneshot.timer
+[root@localhost dmitrii]# systemctl stop oneshot.service 
+
+# Old version:
+/*
+3) Write a timer for the second one and configure it to run on 01.01.2019 at 00:00
+
+[root@localhost tmp]# vim daemon2.sh
+[root@localhost tmp]# chmod +x daemon2.sh
+
+/*
+homework.timer
+
+[Unit]
+Description=Homework
+
+[Timer]
+OnCalendar=01-01-19 0:0:0
+Unit=homework.service
+
+*/
+
+/*
+homework.service
+
+[Unit]
+Description=Homework
+
+[Service]
+Type=oneshot
+ExecStart=/tmp/daemon2.sh
+*/
+
+[root@localhost system]# ls -l
+итого 20
+drwxr-xr-x. 2 root root   57 окт 23 19:08 basic.target.wants
+lrwxrwxrwx. 1 root root   41 окт 23 19:07 dbus-org.fedoraproject.FirewallD1.service -> /usr/lib/systemd/system/firewalld.service
+lrwxrwxrwx. 1 root root   46 окт 23 19:07 dbus-org.freedesktop.NetworkManager.service -> /usr/lib/systemd/system/NetworkManager.service
+lrwxrwxrwx. 1 root root   57 окт 23 19:07 dbus-org.freedesktop.nm-dispatcher.service -> /usr/lib/systemd/system/NetworkManager-dispatcher.service
+lrwxrwxrwx. 1 root root   37 окт 23 19:12 default.target -> /lib/systemd/system/multi-user.target
+drwxr-xr-x. 2 root root   87 окт 23 19:07 default.target.wants
+drwxr-xr-x. 2 root root   32 окт 23 19:07 getty.target.wants
+-rw-r--r--. 1 root root   78 ноя  9 06:17 homework.service
+-rw-r--r--. 1 root root   85 ноя  9 06:37 homework.timer
+...
+
+[root@localhost system]# cd /tmp
+[root@localhost tmp]# ls -l
+итого 8
+-rwxr-xr-x. 1 root    root    40 ноя  9 05:47 daemon2.sh
+-rw-rw-r--. 1 dmitrii dmitrii  4 ноя  9 05:53 homework
+drwx------. 3 root    root    17 окт 30 09:01 systemd-private-05e02df8dc924dea8e27d4eed9b1cf38-chronyd.service-Wvt7zi
+drwx------. 2 dmitrii dmitrii 21 окт 28 10:58 tmux-1000
+
+[root@localhost tmp]# systemctl start homework.timer
+[root@localhost tmp]# systemctl status homework.timer
+● homework.timer - Homework
+   Loaded: loaded (/etc/systemd/system/homework.timer; static; vendor preset: disabled)
+   Active: active (elapsed) since Пт 2018-11-09 06:43:48 MSK; 15s ago
+
+ноя 09 06:43:48 localhost.localdomain systemd[1]: Started Homework.
+ноя 09 06:43:48 localhost.localdomain systemd[1]: Starting Homework.
+*/
+
+3. Learn anacron:
+
+1) Create an anacron job which executes a script with "echo Hello > /opt/hello" and runs every 2 days
+
+[root@localhost opt]# ls -l
+итого 20
+-rw-r--r--. 1 root root   0 ноя  9 07:10 hello
+-rw-r--r--. 1 root root  73 ноя  9 07:33 hello.service
+-rw-r--r--. 1 root root  62 ноя  9 07:37 hello.sh
+
+/*
+hello.sh
+
+#! /bin/bash
+
+echo Hello > /opt/hello 
+*/
+
+[root@localhost opt]# crontab -e
+/*
+0 0 */2 * * /opt/hello.sh
+*/
+
+[root@localhost opt]# crontab -e
+crontab: installing new crontab
+
+
+2) Create a cron job which executes the same command (will be better to create a script for this) and runs it in 1 minute after system boot.
+
+/*
+hello2.sh
+
+#! /bin/bash
+
+sleep 60
+echo Hello > /opt/hello
+*/
+[root@localhost opt]# crontab -e
+/*
+@reboot root sleep 60 && /opt/hello.sh
+*/
+
+
+3. Lern anacron (fixed)
+
+[root@localhost dmitrii]# cat /etc/anacrontab
+# /etc/anacrontab: configuration file for anacron
+
+# See anacron(8) and anacrontab(5) for details.
+
+SHELL=/bin/sh
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+# the maximal random delay added to the base delay of the jobs
+RANDOM_DELAY=45
+# the jobs will be started during the following hours only
+START_HOURS_RANGE=3-22
+
+#period in days   delay in minutes   job-identifier   command
+1	5	cron.daily		nice run-parts /etc/cron.daily
+7	25	cron.weekly		nice run-parts /etc/cron.weekly
+@monthly 45	cron.monthly		nice run-parts /etc/cron.monthly
+
+[root@localhost opt]# ls -lh
+итого 0
+[root@localhost opt]# vim hello.sh
+[root@localhost opt]# chmod +x hello.sh 
+
+/*
+#! /bin/bash
+
+echo "Hello" > /opt/hello
+*/
+
+[root@localhost ~]# crontab -e
+
+HELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=avc
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+@reboot sleep 60 && /home/root/opt/hello.sh
+
+crontab: installing new crontab
+
+[root@localhost ~]# reboot
+Connection to 192.168.56.102 closed by remote host.
+Connection to 192.168.56.102 closed.
+MacBook-Air-User:~ user$ ssh root@CentosVB
+Last login: Thu Nov 29 20:19:23 2018 from 192.168.56.1
+[root@localhost ~]# cat /opt/hello
+Hello
