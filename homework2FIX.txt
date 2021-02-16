@@ -1,0 +1,136 @@
+1. AWK:
+1.1 What is the most frequent browser (user agent)?
+
+[root@localhost ~]# mkdir homework2
+[root@localhost ~]# cd homework2
+[root@localhost homework2]# vim task1_1.sh
+
+/*
+#!/bin/bash
+
+awk -F \" '{count[$6]++} END { PROCINFO["sorted_in"]="@val_num_desc"; for (a in count) { print count[a]" "a ; break}}' access_log
+*/
+
+[root@localhost homework2]# chmod +x task1_1.sh
+[root@localhost homework2]# ./task1_1.sh
+9787 Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
+
+1.2 Show number of requests per month for ip 95.108.129.196 (for example: Sep 2016 - 100500 reqs, Oct 2016 - 0 reqs, Nov 2016 - 2 reqs...)
+
+[root@localhost homework2]# vim task1_2.sh
+
+/*
+#!/bin/bash
+
+awk 'BEGIN{
+FS=" ";date=substr($4,5,9);ip="95.108.129.196";total=0;count=0
+}
+{if(date == substr($4,5,9) && ip==$1){count++;}else if(date == substr($4,5,9) && ip!=$1){}
+else{print date " " count " reqs";total=total+count; count=0;date=substr($4,5,9)}}' access_log | sort -k 2,2n -k 1,1M
+*/
+
+[root@localhost homework2]# chmod +x task1_2.sh
+[root@localhost homework2]# ./task1_2.sh
+Aug/2016: 0 reqs
+Feb/2018: 0 reqs
+Jan/2018: 0 reqs
+Oct/2016: 0 reqs
+Sep/2016: 0 reqs
+Dec/2017: 14 reqs
+Nov/2016: 59 reqs
+Feb/2017: 97 reqs
+Apr/2017: 115 reqs
+Jun/2017: 116 reqs
+Nov/2017: 116 reqs
+Sep/2017: 116 reqs
+Jan/2017: 117 reqs
+May/2017: 117 reqs
+Dec/2016: 119 reqs
+Mar/2017: 119 reqs
+Aug/2017: 120 reqs
+Jul/2017: 120 reqs
+Oct/2017: 120 reqs
+
+1.3 Show total amount of data which server has provided for each unique ip (i.e. 100500 bytes for 1.2.3.4; 9001 bytes for 5.4.3.2 and so on)
+
+[root@localhost homework2]# cat access_log | awk '{ arr[$1]+= $10 } END { for (key in arr) print arr[key],"bytes for ", key }' > task1_3
+
+[root@localhost homework2]# vim task1_3
+
+/*
+777 bytes for  78.137.15.20
+12 bytes for  176.223.113.26
+12 bytes for  84.53.198.255
+6 bytes for  188.68.213.147
+....
+*/
+
+[root@localhost homework2]# ls -lh
+итого 6,0M
+-rw-r--r-- 1 root root 5,9M ноя 29 22:54 access_log
+-rw-r--r-- 1 root root   89 ноя 29 23:39 task1_1
+-rwxr-xr-x 1 root root  143 ноя 29 23:53 task1_1.sh
+-rwxr-xr-x 1 root root  299 ноя 30 00:48 task1_2.sh
+-rw-r--r-- 1 root root 128K ноя 30 01:01 task1_3
+
+2. Sed:
+
+2.1 Change all user agents to "lynx":
+[root@localhost homework2]# cat access_log | sed 's/" ".*/" "lynx"/g' > task2_1
+[root@localhost homework2]# vim task2_1
+
+/*
+...
+78.140.198.50 - - [20/Aug/2016:02:42:02 +0300] "GET / HTTP/1.1" 200 555 "-" "lynx"
+78.140.198.50 - - [20/Aug/2016:02:42:17 +0300] "GET / HTTP/1.1" 200 554 "-" "lynx"
+78.140.198.50 - - [20/Aug/2016:02:45:32 +0300] "GET / HTTP/1.1" 200 55019 "-" "lynx"
+78.140.198.50 - - [20/Aug/2016:02:47:34 +0300] "GET / HTTP/1.1" 200 55027 "-" "lynx"
+149.154.167.163 - - [20/Aug/2016:02:48:11 +0300] "GET / HTTP/1.1" 200 55027 "-" "lynx"
+78.140.198.50 - - [20/Aug/2016:02:48:19 +0300] "GET / HTTP/1.1" 200 55027 "-" "lynx"
+...
+*/
+
+2.2 Masquerade all ip addresses. For example, 1.2.3.4 becomes "ip1", 3.4.5.6 becomse "ip2" and so on. Rewrite file.
+
+[root@localhost homework2]# mkdir sed
+[root@localhost homework2]# cp access_log ./task2_2/access_log_sed
+[root@localhost homework2]# vim task2_2.sh
+
+/*
+#!/bin/bash
+
+array=$(awk '{ print $1 }' access_log | sort | uniq)
+
+i=1
+for var in $array; do
+        sed -i "s/${var}/IP$i/g" /root/homework2/task2_2/access_log_sed
+let "i += 1"
+done
+*/
+
+[root@localhost homework2]# chmod +x task2_2.sh
+[root@localhost homework2]# vim task2_2/access_log_sed 
+
+/*
+...
+IP4289 - - [26/Oct/2016:10:36:24 +0300] "GET /index.html HTTP/1.1" 200 3608 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"
+IP3476 - - [26/Oct/2016:10:38:19 +0300] "GET /?_escaped_fragment_= HTTP/1.1" 200 3608 "-" "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+IP544 - - [26/Oct/2016:15:43:45 +0300] "GET / HTTP/1.1" 200 3608 "-" "TelegramBot (like TwitterBot)"
+IP1077 - - [26/Oct/2016:15:44:47 +0300] "GET / HTTP/1.1" 200 3608 "-" "Mozilla/5.0 (Linux; Android 7.0; Nexus 5X Build/NBD90W) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.68 Mobile Safari/537.36"
+IP4289 - - [26/Oct/2016:15:51:29 +0300] "GET / HTTP/1.1" 200 3608 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"
+IP4289 - - [26/Oct/2016:15:53:11 +0300] "GET /index.html HTTP/1.1" 200 3608 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"
+...
+*/
+
+[root@localhost homework2]# ls -lh
+итого 9,2M
+-rw-r--r-- 1 root root 5,9M ноя 29 22:54 access_log
+-rw-r--r-- 1 root root  62K ноя 30 01:38 sorted
+-rw-r--r-- 1 root root   89 ноя 29 23:39 task1_1
+-rwxr-xr-x 1 root root  143 ноя 29 23:53 task1_1.sh
+-rwxr-xr-x 1 root root  299 ноя 30 00:48 task1_2.sh
+-rw-r--r-- 1 root root 128K ноя 30 01:01 task1_3
+-rw-r--r-- 1 root root 3,2M ноя 30 01:17 task2_1
+drwxr-xr-x 2 root root   28 ноя 30 01:59 task2_2
+-rwxr-xr-x 1 root root  176 ноя 30 01:47 task2_2.sh 
+

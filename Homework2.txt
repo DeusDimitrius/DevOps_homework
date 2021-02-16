@@ -1,0 +1,163 @@
+1. Task 1. AWK. What is the most frequent browser (user agent)?
+
+[dmitrii@localhost ~]$ touch access.log
+
+[dmitrii@localhost ~]$ vim access.log
+
+[dmitrii@localhost ~]$ touch Chrome.txt; awk '/Chrome/ {print $1}' access.log > Chrome.txt
+[dmitrii@localhost ~]$ touch Safari.txt; awk '/Safari/ {print $1}' access.log > Safari.txt
+[dmitrii@localhost ~]$ touch Mozilla.txt; awk '/Mozilla/ {print $1}' access.log > mozilla.txt
+[dmitrii@localhost ~]$ wc -l Mozilla.txt Chrome.txt Safari.txt
+ 32998 Mozilla.txt
+  6650 Chrome.txt
+  7082 Safari.txt
+
+/*
+The most frequent browser is Mozilla.
+*/
+
+2. Task 1. AWK. Show number of requests per month for ip 95.108.129.196 (for example: Sep 2016 - 100500 reqs, Oct 2016 - 0 reqs, Nov 2016 - 2 reqs...)
+
+/*
+Check requests by years.
+*/
+
+[dmitrii@localhost ~]$ touch user00.txt; awk '/95.108.129.196/ && /2018/ {print $1 "hello"}' access.log > user00.txt; wc -l user00.txt
+0 user00.txt
+[dmitrii@localhost ~]$ touch user00.txt; awk '/95.108.129.196/ && /2017/ {print $1 "hello"}' access.log > user00.txt; wc -l user00.txt
+1288 user00.txt
+[dmitrii@localhost ~]$ touch user00.txt; awk '/95.108.129.196/ && /2016/ {print $1 "hello"}' access.log > user00.txt; wc -l user00.txt
+178 user00.txt
+
+/*
+Write results in the file:
+*/ 
+
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Jan/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Jan - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Feb/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Feb - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Mar/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Mar - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Apr/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Apr - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /May/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 May - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Jun/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Jun - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Jul/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Jul - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Aug/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Aug - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Sep/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Sep - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Oct/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Oct - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Nov/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Nov - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2016/ && /Dec/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2016 Dec - $result" >> result.txt
+
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Jan/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Jan - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Feb/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Feb - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Mar/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Mar - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Apr/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Apr - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /May/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 May - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Jun/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Jun - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Jul/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Jul - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Aug/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Aug - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Sep/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Sep - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Oct/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Oct - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Nov/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Nov - $result" >> result.txt
+[dmitrii@localhost ~]$ awk '/95.108.129.196/ && /2017/ && /Dec/ {print $1}' access.log > user00.txt; result=$(wc -l user00.txt); echo "2017 Dec - $result" >> result.txt
+
+[dmitrii@localhost ~]$ awk '{print  $1" "$2" "$3" "$4}' result.txt > final.txt; cat final.txt
+2016 Jan - 0
+2016 Feb - 0
+2016 Mar - 0
+2016 Apr - 0
+2016 May - 0
+2016 Jun - 0
+2016 Jul - 0
+2016 Aug - 0
+2016 Sep - 0
+2016 Oct - 0
+2016 Nov - 59
+2016 Dec - 119
+2017 Jan - 117
+2017 Feb - 97
+2017 Mar - 119
+2017 Apr - 116
+2017 May - 117
+2017 Jun - 116
+2017 Jul - 120
+2017 Aug - 120
+2017 Sep - 116
+2017 Oct - 120
+2017 Nov - 116
+2017 Dec - 14
+
+3. Task 1. AWK. Show total amount of data which server has provided for each unique ip.
+
+Group by IP-adress field; fields 9 and 10 are responsible for bytes; summarize  9 and 10 for unique IPs. Output formatted output using ‘printf’ use %s format for text, %d is for numbers (summ of bytes). \n - forced line feed.
+
+[dmitrii@localhost ~]$ cat access.log | awk '{ arr[$1]+=$9 $10 } END { for (key in arr) printf("%d %s\n", arr[key],"bytes for " key) }' > byte1.txt
+
+/*
+Part of the output:
+
+1419016 bytes for 66.249.66.215
+200777  bytes for 5.45.69.93
+200777  bytes for 95.81.252.118
+410310  bytes for 69.30.225.58
+1206556 bytes for 66.249.66.217
+623338  bytes for 66.249.66.219
+200777  bytes for 211.0.145.110
+200777  bytes for 185.36.158.26
+200777  bytes for 211.0.145.111
+4012    bytes for 146.185.148.22
+4012    bytes for 162.244.80.208
+4012    bytes for 213.167.201.93
+4012    bytes for 46.158.108.205
+200420  bytes for 95.27.226.62
+4012    bytes for 169.50.62.94
+4012    bytes for 195.181.172.66
+200777  bytes for 46.0.193.128
+1216881 bytes for 178.255.44.62
+200420  bytes for 54.174.109.164
+200424  bytes for 54.202.58.26
+200424  bytes for 37.9.113.176
+200420  bytes for 163.172.65.181
+4012    bytes for 141.8.142.213
+200777  bytes for 82.223.109.94
+*/
+
+4. Task 2. SED. Change all user agents to "lynx».
+
+cat access.log | sed 's/Mozilla\|Chrome\|Safari/lynx/g' > sed1.txt
+
+/*
+Part of the file sed1.txt:
+78.140.198.50 - - [20/Sep/2016:12:30:34 +0300] "GET /record/add HTTP/1.1" 404 253 "-" "lynx/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) lynx/54.0.2840.14 lynx/537.36"
+78.140.198.50 - - [20/Sep/2016:12:30:35 +0300] "GET /record/add HTTP/1.1" 404 253 "-" "lynx/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) lynx/54.0.2840.14 lynx/537.36"
+*/
+
+5. Task 2. SED. Masquerade all ip addresses. For example, 1.2.3.4 becomes "ip1", 3.4.5.6 becomes "ip2" and so on. Rewrite file.
+
+1) I used bash:
+/*
+scrypt.sh
+
+#!/bin/bash
+
+cat access.log | awk '{arr[$1]} END {for (key in arr) printf ("%s\n", key)}' > sed3.txt
+file="sed3.txt"
+i=1
+for var in $(cat $file)
+do
+sed -i "s/${var}/IP$i/g"  access.log
+let "i += 1"
+done
+*/
+
+2) The file access.log was overwritten.
+/*
+Part of the overwritten file access.log:
+IP13316 - - [29/Mar/2018:11:57:25 +0300] "GET / HTTP/1.1" 200 6 "-" "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"
+IP3957 - - [29/Mar/2018:12:02:24 +0300] "GET / HTTP/1.0" 200 6 "http://example.ru/" "Mozilla/5.0 (Windows NT 10.0; Win64; rv:33.1) Gecko/20100101 Firefox/33.1"
+IP3957 - - [29/Mar/2018:12:02:24 +0300] "GET / HTTP/1.0" 200 6 "http://example.ru/" "Mozilla/5.0 (Windows NT 10.0; Win64; rv:33.1) Gecko/20100101 Firefox/33.1"
+IP377 - - [29/Mar/2018:12:21:14 +0300] "GET / HTTP/1.1" 200 6 "-" "Mozilla/5.0 (compatible; YandexMetrika/2.0; +http://yandex.com/bots yabs01)"
+IP377 - - [29/Mar/2018:12:54:14 +0300] "GET / HTTP/1.1" 200 6 "-" "Mozilla/5.0 (compatible; YandexMetrika/2.0; +http://yandex.com/bots yabs01)"
+IP377 - - [29/Mar/2018:13:19:44 +0300] "GET / HTTP/1.1" 200 6 "-" "Mozilla/5.0 (compatible; YandexMetrika/2.0; +http://yandex.com/bots yabs01)"
+IP377 - - [29/Mar/2018:13:47:46 +0300] "GET / HTTP/1.1" 200 6 "-" "Mozilla/5.0 (compatible; YandexMetrika/2.0; +http://yandex.com/bots yabs01)"
+IP3450 - - [29/Mar/2018:14:24:38 +0300] "GET / HTTP/1.1" 200 6 "-" "Mozilla/5.0 (compatible; YandexMetrika/2.0; +http://yandex.com/bots)"
+*/
+
